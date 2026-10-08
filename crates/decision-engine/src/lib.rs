@@ -2,6 +2,9 @@
 //! Scores are *heuristic fit indices*, NOT winning percentages, biological reflex
 //! measurements or claims about real athletes.
 pub mod offside;
+pub mod responses;
+
+pub use responses::OpponentResponseAssessment;
 
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
@@ -75,6 +78,10 @@ pub struct ActionAssessment {
     pub decision_fit_index: u8,
     pub player_fit_index: u8,
     pub opponent_resistance_index: u8,
+    pub uncountered_fit_index: u8,
+    pub counter_suppression_points: u8,
+    pub chosen_opponent_response_id: String,
+    pub opponent_responses: Vec<OpponentResponseAssessment>,
     pub modeled_opponent_response: String,
     pub coaching_instruction: String,
     pub relevant_player_strength: String,
@@ -107,7 +114,6 @@ struct ActionSpec {
     label: &'static str,
     assessed_weights: [u8; 9],
     opponent_weights: [u8; 9],
-    opponent_response: &'static str,
     coaching: &'static str,
 }
 
@@ -116,21 +122,21 @@ const OPEN_PLAY: [ActionSpec; 3] = [
         id: "direct_dribble", label: "Direct dribble",
         assessed_weights: [15, 50, 0, 0, 0, 0, 0, 0, 35],
         opponent_weights: [0, 0, 0, 0, 45, 40, 15, 0, 0],
-        opponent_response: "Opponent anticipates the central dribble and protects the direct lane.",
+
         coaching: "Avoid driving directly into a well-positioned opponent if your close control is the weaker fit.",
     },
     ActionSpec {
         id: "accelerate_wide", label: "Accelerate into the outside channel",
         assessed_weights: [70, 20, 0, 0, 0, 0, 0, 0, 10],
         opponent_weights: [45, 0, 0, 0, 0, 30, 25, 0, 0],
-        opponent_response: "Opponent turns and attempts to recover into the wide channel.",
+
         coaching: "Change angle early, use the first acceleration burst, and attack space rather than the defender.",
     },
     ActionSpec {
         id: "quick_combination", label: "One-two combination",
         assessed_weights: [0, 0, 60, 0, 20, 0, 0, 0, 20],
         opponent_weights: [0, 0, 0, 0, 35, 40, 25, 0, 0],
-        opponent_response: "Opponent may track the receiver and attempt to close the return-pass lane.",
+
         coaching: "Invite pressure, release an early pass, then accelerate behind the first line of pressure.",
     },
 ];
@@ -141,8 +147,7 @@ const PENALTY: [ActionSpec; 3] = [
         label: "Early power shot",
         assessed_weights: [0, 20, 0, 60, 0, 0, 0, 0, 20],
         opponent_weights: [0, 0, 0, 0, 0, 0, 50, 50, 0],
-        opponent_response:
-            "Goalkeeper reads the early strike and reacts using shot-stopping ability.",
+
         coaching: "Avoid relying on power alone when it is not your strongest kicking attribute.",
     },
     ActionSpec {
@@ -150,7 +155,7 @@ const PENALTY: [ActionSpec; 3] = [
         label: "Controlled placed shot",
         assessed_weights: [0, 30, 0, 40, 0, 0, 0, 0, 30],
         opponent_weights: [0, 0, 0, 0, 30, 0, 20, 50, 0],
-        opponent_response: "Goalkeeper anticipates the placement and dives into the expected area.",
+
         coaching:
             "Prioritize repeatable placement and composure over an uncertain maximum-power strike.",
     },
@@ -159,7 +164,7 @@ const PENALTY: [ActionSpec; 3] = [
         label: "Late controlled placement",
         assessed_weights: [0, 30, 0, 20, 0, 0, 0, 0, 50],
         opponent_weights: [0, 0, 0, 0, 40, 0, 20, 40, 0],
-        opponent_response: "Goalkeeper waits longer before choosing a dive direction.",
+
         coaching:
             "Hold your rhythm and use a late placement decision only when composure is sufficient.",
     },
@@ -171,8 +176,7 @@ const FREE_KICK: [ActionSpec; 3] = [
         label: "Direct power attempt",
         assessed_weights: [0, 25, 0, 60, 0, 0, 0, 0, 15],
         opponent_weights: [0, 0, 0, 0, 0, 20, 30, 50, 0],
-        opponent_response:
-            "Goalkeeper sets for a direct shot while the wall protects the central lane.",
+
         coaching:
             "Use direct power only when your shooting and technical consistency justify the risk.",
     },
@@ -181,7 +185,7 @@ const FREE_KICK: [ActionSpec; 3] = [
         label: "Placed curl",
         assessed_weights: [0, 55, 0, 30, 0, 0, 0, 0, 15],
         opponent_weights: [0, 0, 0, 0, 0, 30, 20, 50, 0],
-        opponent_response: "Goalkeeper adjusts position for a curved delivery around the wall.",
+
         coaching:
             "Prioritize technique and placement, adjusting the trajectory around the modeled wall.",
     },
@@ -190,8 +194,7 @@ const FREE_KICK: [ActionSpec; 3] = [
         label: "Short combination routine",
         assessed_weights: [0, 0, 50, 0, 30, 0, 0, 0, 20],
         opponent_weights: [20, 0, 0, 0, 30, 50, 0, 0, 0],
-        opponent_response:
-            "Opponent steps toward the short receiver and attempts to close the next pass.",
+
         coaching:
             "Use passing and anticipation to move the defensive block before the final delivery.",
     },
@@ -255,25 +258,42 @@ pub fn evaluate(
             let player_fit = weighted(&assessed.traits, &option.assessed_weights);
             let resistance = weighted(&opponent.traits, &option.opponent_weights);
             let vulnerability = 100u8.saturating_sub(resistance);
-            let fit = ((u16::from(player_fit) * 2 + u16::from(vulnerability) + 1) / 3) as u8;
+            let uncountered = ((u16::from(player_fit) * 2 + u16::from(vulnerability) + 1) / 3) as u8;
+            let responses = responses::evaluate_responses(
+                scenario,
+                option.id,
+                &assessed.traits,
+                &opponent.traits,
+            );
+            // Deterministic opponent: choose the strongest available counter.
+            // Stable ties favor the earlier response definition.
+            let chosen = responses.iter().enumerate().max_by_key(|(index, response)| {
+                (response.effectiveness_index, std::cmp::Reverse(*index))
+            }).map(|(_, response)| response).expect("every supported action has counter-responses");
+            // A higher modelled counter effectiveness reduces expected tactical fit.
+            // This is an illustrative penalty, NOT a calibrated expected-goals model.
+            let suppression = ((u16::from(chosen.effectiveness_index) + 3) / 7) as u8;
+            let fit = uncountered.saturating_sub(suppression);
             ActionAssessment {
                 id: option.id.to_string(),
                 label: option.label.to_string(),
                 decision_fit_index: fit,
                 player_fit_index: player_fit,
                 opponent_resistance_index: resistance,
-                modeled_opponent_response: option.opponent_response.to_string(),
+                uncountered_fit_index: uncountered,
+                counter_suppression_points: suppression,
+                chosen_opponent_response_id: chosen.id.clone(),
+                opponent_responses: responses,
+                modeled_opponent_response: format!("{}: {}", chosen.label, chosen.explanation),
                 coaching_instruction: option.coaching.to_string(),
                 relevant_player_strength: leading_strength(
                     &assessed.traits,
                     &option.assessed_weights,
-                )
-                .to_string(),
+                ).to_string(),
                 opponent_vulnerability: relevant_weakness(
                     &opponent.traits,
                     &option.opponent_weights,
-                )
-                .to_string(),
+                ).to_string(),
             }
         })
         .collect();
@@ -307,7 +327,7 @@ pub fn evaluate(
         improvement_index_points: delta,
         actions,
         explanation,
-        limitations: "Fictional profiles, fixed tactical response templates and illustrative weighting. Not real-player scouting, medical reflex testing, performance forecasting or calibrated success probabilities.".into(),
+        limitations: "Fictional profiles, discrete opponent best-response choices and illustrative weighting; there is no continuous movement, physical trajectory or trained reaction policy. Not real-player scouting, medical reflex testing, performance forecasting or calibrated success probabilities.".into(),
     })
 }
 

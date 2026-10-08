@@ -4,7 +4,7 @@
 
 Rust-powered, synthetic football matchup and tactical correction engine for Microsoft's **Inside the Game** hackathon.
 
-> **Brand finalized:** ReactCoach 11. **GitHub repository still named** `matchlens-ai` until the owner renames it to `reactcoach-11` in GitHub settings. The Microsoft Innovation Studio listing must also be updated separately.
+> **Brand finalized:** ReactCoach 11. **GitHub repository:** `devgupta-9/reactcoach-11`. Microsoft Innovation Studio branding update was confirmed by the project owner.
 
 ## Core value
 
@@ -15,13 +15,14 @@ The user starts with an assessed player, a specific opponent and a football situ
 ## Implemented initial scope
 
 - Rust engine: synthetic player profiles, bounded 0–100 traits, explicit action/opponent trait weights, deterministic original-vs-recommended comparison.
+- **Discrete opponent best-response:** each proposed move is challenged by two possible counters evaluated against the editable profiles; the strongest modeled counter reduces the final decision fit index. This is not a continuous physics simulation.
 - Demo modes: open play, penalty, free kick.
 - Rule-aware offside **position** check with a timing correction; not a complete offside offence or VAR decision.
 - Axum REST API and synthetic match replay over SSE.
 - Next.js interface for the decision lab and legacy synthetic match replay.
 - Automated format/lint/test/build CI.
 
-**Not implemented:** real-player scouting data, dynamic multi-agent simulation, Microsoft Foundry model calls, physical ball dynamics, calibrated outcome predictions or Azure deployment.
+**Not implemented:** real-player scouting data, continuous spatial opponent simulation, Microsoft Foundry model calls, physical ball dynamics, calibrated outcome predictions or Azure deployment.
 
 ## Requirements
 

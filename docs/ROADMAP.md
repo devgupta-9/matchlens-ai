@@ -9,7 +9,8 @@ The product is an **adaptive football decision coach**: assessed-player strength
 - [x] GitHub CI format, lint, test and build passed on initial foundation.
 - [ ] Generate and commit Cargo.lock and apps/web/package-lock.json.
 - [ ] End-to-end browser replay verification and responsive QA.
-- [ ] Update Innovation Studio with the finalized brand, description and repository.
+- [x] Rename GitHub repository to reactcoach-11 and confirm branch/PR history.
+- [x] Innovation Studio naming and project details updated (owner confirmed).
 
 ## Proper Task 2 — Adaptive Decision Intelligence (In progress)
 - [x] Formal core specification: docs/REACTCOACH_11_PRODUCT_SPEC.md.
@@ -18,8 +19,9 @@ The product is an **adaptive football decision coach**: assessed-player strength
 - [x] Offside *position-only* Law 11 demonstration and explicit limitations.
 - [x] Read-only endpoints for synthetic decision demos and offside position.
 - [x] Verify all CI checks after the pivot (GitHub Actions run 37739740707).
-- [ ] Add user-editable attribute profiles with safe input validation and reranking.
-- [ ] Add dynamic opponent best-response simulation (not fixed templates).
+- [x] Add user-editable attribute profiles with safe input validation and reranking.
+- [x] Add deterministic opponent best-response comparison across two possible counters for each scenario action (discrete traits-based model).
+- [ ] Add multi-step opponent and assessed-player response rollouts with spatial constraints.
 - [ ] Add precise spatial movement and play-state constraints.
 - [ ] Add scenario-specific constraints: walls, goalkeeper positions, pass timing.
 - [ ] Run product UX tests with realistic synthetic situations.

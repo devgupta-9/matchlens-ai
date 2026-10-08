@@ -7,9 +7,10 @@ type Scenario = "open_play" | "penalty" | "free_kick" | "offside";
 type TraitName = "acceleration" | "technique" | "passing" | "finishing" | "anticipation" | "positioning" | "reactions" | "goalkeeping" | "composure";
 type Traits = Record<TraitName, number>;
 type PlayerProfile = { id: string; label: string; description: string; traits: Traits; synthetic: boolean };
+type OpponentResponse = { id: string; label: string; explanation: string; effectiveness_index: number; opponent_dominant_trait: string; assessed_escape_trait: string };
 type ActionAssessment = {
   id: string; label: string; decision_fit_index: number; player_fit_index: number;
-  opponent_resistance_index: number; modeled_opponent_response: string;
+  opponent_resistance_index: number; uncountered_fit_index: number; counter_suppression_points: number; chosen_opponent_response_id: string; opponent_responses: OpponentResponse[]; modeled_opponent_response: string;
   coaching_instruction: string; relevant_player_strength: string; opponent_vulnerability: string;
 };
 type MatchupReport = {
@@ -165,6 +166,21 @@ export default function DecisionLab() {
             {best && <div className="rx-choice rx-choice-best"><small>HIGHEST-FIT OPTION</small><h3>{best.label}</h3><div className="rx-score">{best.decision_fit_index}<span>/100 fit index</span></div><ScoreBar score={best.decision_fit_index} /><p>{best.coaching_instruction}</p></div>}
           </div>
           <div className="rx-gain"><strong>{report.improvement_index_points > 0 ? "+" : ""}{report.improvement_index_points} fit-index points</strong><span>Model comparison, not probability of success</span></div>
+          <div className="rx-response-review">
+            <div className="rx-section-title">Opponent best-response review</div>
+            <p>For each attacking decision, the synthetic opponent evaluates two counters and selects the most effective option for their profile. These are relative fitness indices, not match probabilities.</p>
+            {best && <div className="rx-counter-grid">{best.opponent_responses.map((response) => (
+              <article key={response.id} className={`rx-counter ${response.id === best.chosen_opponent_response_id ? "selected" : ""}`}>
+                <small>{response.id === best.chosen_opponent_response_id ? "SELECTED COUNTER" : "ALTERNATIVE COUNTER"}</small>
+                <h4>{response.label}</h4>
+                <div className="rx-score">{response.effectiveness_index}<span>/100 response fit</span></div>
+                <ScoreBar score={response.effectiveness_index} muted={response.id !== best.chosen_opponent_response_id} />
+                <p>{response.explanation}</p>
+                <small>Primary opponent trait: {response.opponent_dominant_trait.replaceAll("_", " ")} · Attacker escape trait: {response.assessed_escape_trait.replaceAll("_", " ")}</small>
+              </article>
+            ))}</div>}
+            {best && <p className="rx-response-impact">Before counter: {best.uncountered_fit_index} · Counter suppression: −{best.counter_suppression_points} index points · Final: {best.decision_fit_index}</p>}
+          </div>
           <div className="rx-explanation"><strong>Why the recommendation changes</strong><p>{report.explanation}</p><p><strong>Opponent&apos;s modeled response:</strong> {best?.modeled_opponent_response}</p></div>
           <div className="rx-alternatives"><small>ALL MODELED ACTIONS</small>{report.actions.map((a) => <div key={a.id}><span>{a.label}</span><strong>{a.decision_fit_index}/100</strong></div>)}</div>
           <p className="rx-footnote">{report.limitations}</p>

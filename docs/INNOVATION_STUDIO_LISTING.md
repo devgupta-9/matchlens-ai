@@ -32,12 +32,9 @@ The Synthetic Match Insights Engine for Premier League Studio
 
 ## Code repository
 
-Current: https://github.com/devgupta-9/matchlens-ai
+Current verified: https://github.com/devgupta-9/reactcoach-11
 
-Intended after owner changes GitHub repository name:
-https://github.com/devgupta-9/reactcoach-11
-
-Verify that the renamed repository URL resolves before replacing the repository link in Innovation Studio.
+Repository rename completed; the existing draft PR and CI history remain intact.
 
 ## Project cover
 
