@@ -22,6 +22,17 @@ below and does not publish Phase 2 implementation.
 
 Phase 2A is complete within its stated scope. Phase 2B remains pending.
 
+## Git integration
+
+Phase 1 PR #1 was merged into main with explicit user authorization on 8 October
+2026. Merge commit: `bf49ca583804ea3777bf2cc1d337bcbf21a5f351`. Its file tree is
+identical to the verified Phase 1 head `bc2994d`; all four remote checks passed.
+GitHub confirms PR #1 is closed and merged. The Phase 1 branch remains available.
+
+Local main was synchronized, and main was merged into the local Phase 2 branch
+without conflicts or file changes. Phase 2 remains unpushed and unmerged into main.
+Implementation commits: `5a4abcf` (engine) and `85081ff` (API and documentation).
+
 ## Implementation and files
 
 - `crates/decision-engine/src/simulation/`: `contracts.rs`, `motion.rs`, `rollout.rs`,
