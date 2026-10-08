@@ -258,7 +258,8 @@ pub fn evaluate(
             let player_fit = weighted(&assessed.traits, &option.assessed_weights);
             let resistance = weighted(&opponent.traits, &option.opponent_weights);
             let vulnerability = 100u8.saturating_sub(resistance);
-            let uncountered = ((u16::from(player_fit) * 2 + u16::from(vulnerability) + 1) / 3) as u8;
+            let uncountered =
+                ((u16::from(player_fit) * 2 + u16::from(vulnerability) + 1) / 3) as u8;
             let responses = responses::evaluate_responses(
                 scenario,
                 option.id,
@@ -267,9 +268,14 @@ pub fn evaluate(
             );
             // Deterministic opponent: choose the strongest available counter.
             // Stable ties favor the earlier response definition.
-            let chosen = responses.iter().enumerate().max_by_key(|(index, response)| {
-                (response.effectiveness_index, std::cmp::Reverse(*index))
-            }).map(|(_, response)| response).expect("every supported action has counter-responses");
+            let chosen = responses
+                .iter()
+                .enumerate()
+                .max_by_key(|(index, response)| {
+                    (response.effectiveness_index, std::cmp::Reverse(*index))
+                })
+                .map(|(_, response)| response)
+                .expect("every supported action has counter-responses");
             // A higher modelled counter effectiveness reduces expected tactical fit.
             // This is an illustrative penalty, NOT a calibrated expected-goals model.
             let suppression = ((u16::from(chosen.effectiveness_index) + 3) / 7) as u8;
@@ -289,11 +295,13 @@ pub fn evaluate(
                 relevant_player_strength: leading_strength(
                     &assessed.traits,
                     &option.assessed_weights,
-                ).to_string(),
+                )
+                .to_string(),
                 opponent_vulnerability: relevant_weakness(
                     &opponent.traits,
                     &option.opponent_weights,
-                ).to_string(),
+                )
+                .to_string(),
             }
         })
         .collect();
