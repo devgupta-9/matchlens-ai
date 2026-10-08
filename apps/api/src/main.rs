@@ -10,6 +10,10 @@ use axum::{
 use futures_util::{stream, Stream};
 use matchlens_match_engine::{demo_events, snapshot_at};
 use matchlens_shared::{MatchEvent, MatchSnapshot};
+use reaction_decision_engine::{
+    evaluate_demo, MatchupReport, ScenarioKind,
+    offside::{assess_position, OffsideAssessment, OffsideFrame},
+};
 use serde::{Deserialize, Serialize};
 use tower_http::{cors::CorsLayer, trace::TraceLayer};
 use tracing_subscriber::EnvFilter;
@@ -78,6 +82,49 @@ async fn event_stream() -> Sse<impl Stream<Item = Result<Event, Infallible>>> {
     Sse::new(stream).keep_alive(KeepAlive::default())
 }
 
+
+#[derive(Deserialize)]
+struct DecisionQuery {
+    scenario: Option<String>,
+}
+
+async fn decision_demo(
+    Query(query): Query<DecisionQuery>,
+) -> Result<Json<MatchupReport>, (StatusCode, &'static str)> {
+    let scenario = match query.scenario.as_deref().unwrap_or("open_play") {
+        "open_play" => ScenarioKind::OpenPlay,
+        "penalty" => ScenarioKind::Penalty,
+        "free_kick" => ScenarioKind::FreeKick,
+        _ => return Err((StatusCode::BAD_REQUEST, "unsupported scenario")),
+    };
+    Ok(Json(evaluate_demo(scenario)))
+}
+
+#[derive(Serialize)]
+struct OffsideDemo {
+    original: OffsideAssessment,
+    corrected: OffsideAssessment,
+    correction: &'static str,
+}
+
+async fn offside_demo() -> Json<OffsideDemo> {
+    let original = assess_position(OffsideFrame {
+        attacker_forward_edge: 79.0,
+        ball_forward_edge: 65.0,
+        second_last_opponent_forward_edge: 74.0,
+    }).expect("valid demo frame");
+    let corrected = assess_position(OffsideFrame {
+        attacker_forward_edge: 73.0,
+        ball_forward_edge: 65.0,
+        second_last_opponent_forward_edge: 74.0,
+    }).expect("valid demo frame");
+    Json(OffsideDemo {
+        original,
+        corrected,
+        correction: "At the same synthetic pass instant, delay the attacking run so the relevant body edge stays level with or behind the second-last opponent. This demonstrates position only, not a complete Law 11 offence decision.",
+    })
+}
+
 fn app() -> Router {
     let origin = std::env::var("WEB_ORIGIN").unwrap_or_else(|_| "http://localhost:3000".into());
     let origin: HeaderValue = origin
@@ -93,6 +140,8 @@ fn app() -> Router {
         .route("/api/v1/matches/demo/events", get(events))
         .route("/api/v1/matches/demo/snapshot", get(snapshot))
         .route("/api/v1/matches/demo/stream", get(event_stream))
+        .route("/api/v1/decision-lab/demo", get(decision_demo))
+        .route("/api/v1/offside/demo", get(offside_demo))
         .layer(cors)
         .layer(TraceLayer::new_for_http())
 }
@@ -123,6 +172,56 @@ mod tests {
         http::Request,
     };
     use tower::ServiceExt;
+
+    #[tokio::test]
+    async fn matchup_demo_recommends_an_action_correction() {
+        let response = app()
+            .oneshot(
+                Request::builder()
+                    .uri("/api/v1/decision-lab/demo?scenario=open_play")
+                    .body(Body::empty())
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::OK);
+        let bytes = to_bytes(response.into_body(), 1024 * 1024).await.unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+        assert_eq!(json["recommended_action_id"], "accelerate_wide");
+        assert_eq!(json["assessed_player"]["synthetic"], true);
+    }
+
+    #[tokio::test]
+    async fn unsupported_scenario_returns_bad_request() {
+        let response = app()
+            .oneshot(
+                Request::builder()
+                    .uri("/api/v1/decision-lab/demo?scenario=unsupported")
+                    .body(Body::empty())
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+    }
+
+    #[tokio::test]
+    async fn offside_demo_distinguishes_early_and_corrected_run() {
+        let response = app()
+            .oneshot(
+                Request::builder()
+                    .uri("/api/v1/offside/demo")
+                    .body(Body::empty())
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::OK);
+        let bytes = to_bytes(response.into_body(), 1024 * 1024).await.unwrap();
+        let json: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+        assert_eq!(json["original"]["position"], "offside_position");
+        assert_eq!(json["corrected"]["position"], "onside_position");
+    }
 
     #[tokio::test]
     async fn health_is_200() {

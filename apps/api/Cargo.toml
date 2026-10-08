@@ -8,6 +8,7 @@ license.workspace = true
 [dependencies]
 matchlens-shared = { path = "../../crates/shared" }
 matchlens-match-engine = { path = "../../crates/match-engine" }
+reaction-decision-engine = { path = "../../crates/decision-engine" }
 axum = "0.8"
 tokio = { version = "1", features = ["macros", "rt-multi-thread", "net", "time"] }
 futures-util = "0.3"

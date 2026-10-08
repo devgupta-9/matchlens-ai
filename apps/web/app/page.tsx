@@ -1,3 +1,4 @@
+import DecisionLab from "./decision-lab";
 "use client";
 
 import { useEffect, useState } from "react";
@@ -81,15 +82,17 @@ export default function HomePage() {
   return (
     <main className="shell">
       <header className="topbar">
-        <div className="brand"><span className="brand-mark">M<span>L</span></span><span>MATCHLENS <em>AI</em></span></div>
+        <div className="brand"><span className="brand-mark">R<span>X</span></span><span>REACTION <em>XI</em></span></div>
         <div className="topbar-meta"><span className="status-dot" /> SYNTHETIC DEMONSTRATION <span className="separator">/</span> RUST EVENT ENGINE</div>
       </header>
 
       <section className="intro">
         <div className="eyebrow">INSIDE THE GAME · DEVELOPER HACKATHON</div>
-        <h1>Beyond the scoreline.<br /><span>Understand the game.</span></h1>
-        <p>Evidence-first football intelligence. A deterministic Rust match engine streaming synthetic events into an interactive analysis console.</p>
+        <h1>Know your strengths.<br /><span>Outthink your opponent.</span></h1>
+        <p>Adaptive football decision intelligence. Compare synthetic player strengths, evaluate opponent vulnerabilities, and discover an evidence-labeled tactical correction.</p>
       </section>
+
+      <DecisionLab />
 
       <section className="scoreboard" aria-label="Synthetic match scoreboard">
         <div className="team"><small>HOME / DEMO</small><strong>North City</strong></div>
@@ -129,7 +132,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <footer>MatchLens AI · Synthetic dataset only · No affiliation with football clubs or leagues · Agent orchestration is planned for Phase 3.</footer>
+      <footer>REACTION XI · Synthetic dataset only · No affiliation with football clubs or leagues · Agent orchestration is planned for Phase 3.</footer>
     </main>
   );
 }

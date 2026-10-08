@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "MatchLens AI | Explainable Football Intelligence",
-  description: "Evidence-backed synthetic football match intelligence, powered by Rust.",
+  title: "REACTION XI | Adaptive Football Decision Intelligence",
+  description: "Compare player strengths, simulate opponent responses, and evaluate tactical corrections using synthetic data.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

@@ -1,52 +1,58 @@
-# MatchLens AI
+# REACTION XI — Adaptive Football Decision Intelligence
 
-**Beyond the scoreline. Understand the game.**
+**Know your strengths. Understand your opponent. Make the better decision.**
 
-A Rust-powered synthetic football intelligence prototype for Microsoft's **Inside the Game** developer hackathon.
+Rust-powered, synthetic football matchup and tactical correction engine for Microsoft's **Inside the Game** hackathon.
 
-## Current status
+> **Repository remains named `matchlens-ai` temporarily.** Product rebranding does not silently rename the GitHub repository or Innovation Studio listing.
 
-**Phase 1 foundation — in progress.** An Axum service streams synthetic match events and computes
-deterministic match snapshots; a Next.js dashboard renders the replay. No Microsoft Foundry
-model calls, Azure deployments, real football data, or fully fledged tactical agents are claimed yet.
+## Core value
 
-## Stack
+**Assess → Compare → Simulate → Counter-respond → Recommend → Explain.**
 
-- Rust (Axum, Tokio, Serde) for API, deterministic replay and statistics.
-- Next.js 16 / React 19 / TypeScript for the interactive dashboard.
-- Server-Sent Events for event delivery.
-- Microsoft Foundry + Azure PostgreSQL + Azure Container Apps **planned** for later phases.
+The user starts with an assessed player, a specific opponent and a football situation. REACTION XI compares illustrative player attributes and the opponent's relative vulnerabilities, evaluates alternative actions from the same starting model and recommends a change. It reports a transparent **decision fit index**, **not** a predicted success percentage.
 
-## Local development
+## Implemented initial scope
 
-Prerequisites: Rust stable toolchain (1.80+), Node.js 22+ and npm.
+- Rust engine: synthetic player profiles, bounded 0–100 traits, explicit action/opponent trait weights, deterministic original-vs-recommended comparison.
+- Demo modes: open play, penalty, free kick.
+- Rule-aware offside **position** check with a timing correction; not a complete offside offence or VAR decision.
+- Axum REST API and synthetic match replay over SSE.
+- Next.js interface for the decision lab and legacy synthetic match replay.
+- Automated format/lint/test/build CI.
 
-Terminal 1:
+**Not implemented:** real-player scouting data, dynamic multi-agent simulation, Microsoft Foundry model calls, physical ball dynamics, calibrated outcome predictions or Azure deployment.
 
+## Requirements
+
+Rust stable (>=1.80), Node.js 22+, npm.
+
+Run API:
 ```sh
 cargo run -p matchlens-api
 ```
 
-Terminal 2:
-
+Run frontend (new terminal):
 ```sh
 cd apps/web
 npm install
 npm run dev
 ```
 
-Visit [http://localhost:3000](http://localhost:3000).
-The Rust API listens on port 8080, with CORS allowing `http://localhost:3000` by default.
-The UI starts a repeatable 9-event synthetic replay when the page loads.
-Refresh the page to replay again.
+Open http://localhost:3000.
+
+## Synthetic endpoints
 
 ```sh
 curl http://localhost:8080/api/v1/health
-curl 'http://localhost:8080/api/v1/matches/demo/snapshot?at=420'
+curl 'http://localhost:8080/api/v1/decision-lab/demo?scenario=open_play'
+curl 'http://localhost:8080/api/v1/decision-lab/demo?scenario=penalty'
+curl 'http://localhost:8080/api/v1/decision-lab/demo?scenario=free_kick'
+curl http://localhost:8080/api/v1/offside/demo
 curl -N http://localhost:8080/api/v1/matches/demo/stream
 ```
 
-## Quality checks
+## CI
 
 ```sh
 cargo fmt --all -- --check
@@ -55,20 +61,18 @@ cargo test --workspace
 cd apps/web && npm run lint && npm run typecheck && npm run build
 ```
 
-The CI job runs these checks. Initial dependency lockfiles must still be generated and committed.
+Dependency lockfiles must be generated, committed, and verified before final merge.
 
-## Repository map
+## Architecture / scope
 
-- `apps/api` — Rust API / SSE
-- `apps/web` — Next.js interface
-- `crates/shared` — event contracts
-- `crates/analytics` — deterministic metrics
-- `crates/match-engine` — validated replay engine
-- `crates/agents` — future agent-role contract (no live orchestration yet)
-- `docs/ARCHITECTURE.md` — architecture and limitations
-- `docs/ROADMAP.md` — hackathon milestones
+- `crates/decision-engine`: matchup model, synthetic ratings, scenario comparisons and offside position.
+- `crates/match-engine`: synthetic match replay.
+- `crates/analytics`: deterministic match statistics.
+- `crates/shared`: existing match event wire types.
+- `crates/agents`: future roles (no deployed AI workflows).
+- `apps/api`: Rust Axum / SSE.
+- `apps/web`: Next.js decision lab and replay.
+- [Product specification](docs/REACTION_XI_PRODUCT_SPEC.md)
+- [Roadmap](docs/ROADMAP.md)
 
-## Data provenance
-
-All bundled match records, team names, player names and statistics are **fictional and synthetic**.
-No club, league or Microsoft endorsement is implied. See [LICENSE](LICENSE).
+All demo player identities, ratings, movements and outcomes are **fictional**. No claim of a real professional athlete's strengths, weaknesses or reflexes, nor association with clubs, leagues or Microsoft, is implied. [MIT License](LICENSE).
