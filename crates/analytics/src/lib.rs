@@ -1,5 +1,5 @@
 //! Pure, reproducible statistics computed only from provided event records.
-use matchlens_shared::{EventKind, MatchEvent, MatchStatistics, Team};
+use reactcoach_shared::{EventKind, MatchEvent, MatchStatistics, Team};
 
 pub fn summarize(events: &[MatchEvent]) -> MatchStatistics {
     let mut stats = MatchStatistics::default();
@@ -29,7 +29,7 @@ pub fn summarize(events: &[MatchEvent]) -> MatchStatistics {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use matchlens_shared::PitchPosition;
+    use reactcoach_shared::PitchPosition;
 
     #[test]
     fn empty_events_have_zero_share() {

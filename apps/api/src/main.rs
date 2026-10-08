@@ -8,9 +8,9 @@ use axum::{
     Json, Router,
 };
 use futures_util::{stream, Stream};
-use matchlens_match_engine::{demo_events, snapshot_at};
-use matchlens_shared::{MatchEvent, MatchSnapshot};
-use reaction_decision_engine::{
+use reactcoach_match_engine::{demo_events, snapshot_at};
+use reactcoach_shared::{MatchEvent, MatchSnapshot};
+use reactcoach_decision_engine::{
     evaluate, evaluate_demo,
     offside::{assess_position, OffsideAssessment, OffsideFrame},
     MatchupReport, PlayerProfile, ScenarioKind,
@@ -31,7 +31,7 @@ struct Health {
 async fn health() -> Json<Health> {
     Json(Health {
         status: "ok",
-        service: "matchlens-api",
+        service: "reactcoach-api",
     })
 }
 
@@ -183,7 +183,7 @@ async fn main() {
     let listener = tokio::net::TcpListener::bind(("0.0.0.0", port))
         .await
         .expect("bind API port");
-    tracing::info!(port, "MatchLens API listening");
+    tracing::info!(port, "ReactCoach 11 API listening");
     axum::serve(listener, app()).await.expect("serve HTTP");
 }
 
@@ -248,7 +248,7 @@ mod tests {
 
     #[tokio::test]
     async fn edited_strengths_can_change_recommended_action() {
-        use reaction_decision_engine::demo_profiles;
+        use reactcoach_decision_engine::demo_profiles;
         let (mut assessed, opponent) = demo_profiles(ScenarioKind::OpenPlay);
         assessed.traits.acceleration = 5;
         assessed.traits.technique = 100;
@@ -278,7 +278,7 @@ mod tests {
 
     #[tokio::test]
     async fn edited_out_of_range_ratings_are_rejected() {
-        use reaction_decision_engine::demo_profiles;
+        use reactcoach_decision_engine::demo_profiles;
         let (mut assessed, opponent) = demo_profiles(ScenarioKind::Penalty);
         assessed.traits.acceleration = 120;
         let payload = serde_json::json!({

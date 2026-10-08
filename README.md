@@ -1,16 +1,16 @@
-# REACTION XI — Adaptive Football Decision Intelligence
+# ReactCoach 11 — AI-Powered Adaptive Football Coaching
 
-**Know your strengths. Understand your opponent. Make the better decision.**
+**Know your strengths. Read your opponent. Make the better move.**
 
 Rust-powered, synthetic football matchup and tactical correction engine for Microsoft's **Inside the Game** hackathon.
 
-> **Repository remains named `matchlens-ai` temporarily.** Product rebranding does not silently rename the GitHub repository or Innovation Studio listing.
+> **Brand finalized:** ReactCoach 11. **GitHub repository still named** `matchlens-ai` until the owner renames it to `reactcoach-11` in GitHub settings. The Microsoft Innovation Studio listing must also be updated separately.
 
 ## Core value
 
 **Assess → Compare → Simulate → Counter-respond → Recommend → Explain.**
 
-The user starts with an assessed player, a specific opponent and a football situation. REACTION XI compares illustrative player attributes and the opponent's relative vulnerabilities, evaluates alternative actions from the same starting model and recommends a change. It reports a transparent **decision fit index**, **not** a predicted success percentage.
+The user starts with an assessed player, a specific opponent and a football situation. ReactCoach 11 compares illustrative player attributes and the opponent's relative vulnerabilities, evaluates alternative actions from the same starting model and recommends a change. It reports a transparent **decision fit index**, **not** a predicted success percentage.
 
 ## Implemented initial scope
 
@@ -29,7 +29,7 @@ Rust stable (>=1.80), Node.js 22+, npm.
 
 Run API:
 ```sh
-cargo run -p matchlens-api
+cargo run -p reactcoach-api
 ```
 
 Run frontend (new terminal):
@@ -72,7 +72,7 @@ Dependency lockfiles must be generated, committed, and verified before final mer
 - `crates/agents`: future roles (no deployed AI workflows).
 - `apps/api`: Rust Axum / SSE.
 - `apps/web`: Next.js decision lab and replay.
-- [Product specification](docs/REACTION_XI_PRODUCT_SPEC.md)
+- [Product specification](docs/REACTCOACH_11_PRODUCT_SPEC.md)
 - [Roadmap](docs/ROADMAP.md)
 
 All demo player identities, ratings, movements and outcomes are **fictional**. No claim of a real professional athlete's strengths, weaknesses or reflexes, nor association with clubs, leagues or Microsoft, is implied. [MIT License](LICENSE).

@@ -83,7 +83,7 @@ export default function HomePage() {
   return (
     <main className="shell">
       <header className="topbar">
-        <div className="brand"><span className="brand-mark">R<span>X</span></span><span>REACTION <em>XI</em></span></div>
+        <div className="brand"><span className="brand-mark">R<span>C</span></span><span>REACTCOACH <em>11</em></span></div>
         <div className="topbar-meta"><span className="status-dot" /> SYNTHETIC DEMONSTRATION <span className="separator">/</span> RUST EVENT ENGINE</div>
       </header>
 
@@ -133,7 +133,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <footer>REACTION XI · Synthetic dataset only · No affiliation with football clubs or leagues · Agent orchestration is planned for Phase 3.</footer>
+      <footer>ReactCoach 11 · Synthetic dataset only · No affiliation with football clubs or leagues · Agent orchestration is planned for Phase 3.</footer>
     </main>
   );
 }

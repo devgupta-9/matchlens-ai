@@ -1,6 +1,6 @@
 //! Deterministic, validated event replay. No external sports feeds are used.
-use matchlens_analytics::summarize;
-use matchlens_shared::{EventKind, MatchEvent, MatchSnapshot, PitchPosition, Score, Team};
+use reactcoach_analytics::summarize;
+use reactcoach_shared::{EventKind, MatchEvent, MatchSnapshot, PitchPosition, Score, Team};
 use std::collections::HashSet;
 use thiserror::Error;
 

@@ -1,11 +1,11 @@
-# MatchLens AI — architecture
+# ReactCoach 11 — architecture
 
 ## Phase 1 vertical slice
 
 ```text
 Synthetic events (fictional, checked into Rust source)
-    -> matchlens-match-engine (validation, deterministic ordering, score)
-    -> matchlens-analytics (pure, evidence-computable counters)
+    -> reactcoach-match-engine (validation, deterministic ordering, score)
+    -> reactcoach-analytics (pure, evidence-computable counters)
     -> Axum JSON snapshot + Server-Sent Events endpoints
     -> Next.js client (scoreboard, pitch, timeline)
 ```

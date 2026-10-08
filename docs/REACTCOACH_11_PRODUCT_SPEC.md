@@ -1,6 +1,6 @@
-# REACTION XI — Adaptive Football Decision Intelligence
+# ReactCoach 11 — Adaptive Football Decision Intelligence
 
-**Status:** Approved product direction, early implementation. **Project name:** REACTION XI (working name). **Repository:** `devgupta-9/matchlens-ai` (kept stable until GitHub and Microsoft Innovation Studio references can be updated together).
+**Status:** Approved product direction, early implementation. **Project name:** ReactCoach 11 (final name). **Repository:** `devgupta-9/matchlens-ai` (temporary repository slug until owner completes GitHub repository rename).
 
 ## Mission
 

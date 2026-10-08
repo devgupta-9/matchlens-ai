@@ -1,11 +1,11 @@
 [package]
-name = "matchlens-match-engine"
+name = "reactcoach-match-engine"
 version = "0.1.0"
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 
 [dependencies]
-matchlens-shared = { path = "../shared" }
-matchlens-analytics = { path = "../analytics" }
+reactcoach-shared = { path = "../shared" }
+reactcoach-analytics = { path = "../analytics" }
 thiserror.workspace = true

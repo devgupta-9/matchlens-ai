@@ -1,4 +1,4 @@
-# REACTION XI — Hackathon implementation roadmap
+# ReactCoach 11 — Hackathon implementation roadmap
 
 **Goal:** submit by 26 October 2026 with time for final review before the 27 October Pacific deadline.
 
@@ -12,7 +12,7 @@ The product is an **adaptive football decision coach**: assessed-player strength
 - [ ] Update Innovation Studio with the finalized brand, description and repository.
 
 ## Proper Task 2 — Adaptive Decision Intelligence (In progress)
-- [x] Formal core specification: docs/REACTION_XI_PRODUCT_SPEC.md.
+- [x] Formal core specification: docs/REACTCOACH_11_PRODUCT_SPEC.md.
 - [x] Synthetic player strength/weakness profile contracts.
 - [x] Deterministic action fitness comparison for open play, penalties, free kicks.
 - [x] Offside *position-only* Law 11 demonstration and explicit limitations.
