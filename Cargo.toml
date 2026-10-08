@@ -1,0 +1,14 @@
+[workspace]
+members = ["apps/api", "crates/shared", "crates/analytics", "crates/match-engine", "crates/agents"]
+resolver = "2"
+
+[workspace.package]
+edition = "2021"
+rust-version = "1.80"
+license = "MIT"
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+tracing = "0.1"
