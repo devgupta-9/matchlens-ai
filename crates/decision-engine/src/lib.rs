@@ -30,9 +30,15 @@ pub struct Traits {
 impl Traits {
     fn values(&self) -> [u8; 9] {
         [
-            self.acceleration, self.technique, self.passing, self.finishing,
-            self.anticipation, self.positioning, self.reactions,
-            self.goalkeeping, self.composure,
+            self.acceleration,
+            self.technique,
+            self.passing,
+            self.finishing,
+            self.anticipation,
+            self.positioning,
+            self.reactions,
+            self.goalkeeping,
+            self.composure,
         ]
     }
 
@@ -42,8 +48,15 @@ impl Traits {
 }
 
 const TRAIT_NAMES: [&str; 9] = [
-    "acceleration", "technique", "passing", "finishing", "anticipation",
-    "positioning", "reactions", "goalkeeping", "composure",
+    "acceleration",
+    "technique",
+    "passing",
+    "finishing",
+    "anticipation",
+    "positioning",
+    "reactions",
+    "goalkeeping",
+    "composure",
 ];
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -124,49 +137,63 @@ const OPEN_PLAY: [ActionSpec; 3] = [
 
 const PENALTY: [ActionSpec; 3] = [
     ActionSpec {
-        id: "power_shot", label: "Early power shot",
+        id: "power_shot",
+        label: "Early power shot",
         assessed_weights: [0, 20, 0, 60, 0, 0, 0, 0, 20],
         opponent_weights: [0, 0, 0, 0, 0, 0, 50, 50, 0],
-        opponent_response: "Goalkeeper reads the early strike and reacts using shot-stopping ability.",
+        opponent_response:
+            "Goalkeeper reads the early strike and reacts using shot-stopping ability.",
         coaching: "Avoid relying on power alone when it is not your strongest kicking attribute.",
     },
     ActionSpec {
-        id: "placed_shot", label: "Controlled placed shot",
+        id: "placed_shot",
+        label: "Controlled placed shot",
         assessed_weights: [0, 30, 0, 40, 0, 0, 0, 0, 30],
         opponent_weights: [0, 0, 0, 0, 30, 0, 20, 50, 0],
         opponent_response: "Goalkeeper anticipates the placement and dives into the expected area.",
-        coaching: "Prioritize repeatable placement and composure over an uncertain maximum-power strike.",
+        coaching:
+            "Prioritize repeatable placement and composure over an uncertain maximum-power strike.",
     },
     ActionSpec {
-        id: "delayed_placement", label: "Late controlled placement",
+        id: "delayed_placement",
+        label: "Late controlled placement",
         assessed_weights: [0, 30, 0, 20, 0, 0, 0, 0, 50],
         opponent_weights: [0, 0, 0, 0, 40, 0, 20, 40, 0],
         opponent_response: "Goalkeeper waits longer before choosing a dive direction.",
-        coaching: "Hold your rhythm and use a late placement decision only when composure is sufficient.",
+        coaching:
+            "Hold your rhythm and use a late placement decision only when composure is sufficient.",
     },
 ];
 
 const FREE_KICK: [ActionSpec; 3] = [
     ActionSpec {
-        id: "direct_power", label: "Direct power attempt",
+        id: "direct_power",
+        label: "Direct power attempt",
         assessed_weights: [0, 25, 0, 60, 0, 0, 0, 0, 15],
         opponent_weights: [0, 0, 0, 0, 0, 20, 30, 50, 0],
-        opponent_response: "Goalkeeper sets for a direct shot while the wall protects the central lane.",
-        coaching: "Use direct power only when your shooting and technical consistency justify the risk.",
+        opponent_response:
+            "Goalkeeper sets for a direct shot while the wall protects the central lane.",
+        coaching:
+            "Use direct power only when your shooting and technical consistency justify the risk.",
     },
     ActionSpec {
-        id: "placed_curl", label: "Placed curl",
+        id: "placed_curl",
+        label: "Placed curl",
         assessed_weights: [0, 55, 0, 30, 0, 0, 0, 0, 15],
         opponent_weights: [0, 0, 0, 0, 0, 30, 20, 50, 0],
         opponent_response: "Goalkeeper adjusts position for a curved delivery around the wall.",
-        coaching: "Prioritize technique and placement, adjusting the trajectory around the modeled wall.",
+        coaching:
+            "Prioritize technique and placement, adjusting the trajectory around the modeled wall.",
     },
     ActionSpec {
-        id: "short_routine", label: "Short combination routine",
+        id: "short_routine",
+        label: "Short combination routine",
         assessed_weights: [0, 0, 50, 0, 30, 0, 0, 0, 20],
         opponent_weights: [20, 0, 0, 0, 30, 50, 0, 0, 0],
-        opponent_response: "Opponent steps toward the short receiver and attempts to close the next pass.",
-        coaching: "Use passing and anticipation to move the defensive block before the final delivery.",
+        opponent_response:
+            "Opponent steps toward the short receiver and attempts to close the next pass.",
+        coaching:
+            "Use passing and anticipation to move the defensive block before the final delivery.",
     },
 ];
 
@@ -179,8 +206,14 @@ fn specs(scenario: ScenarioKind) -> &'static [ActionSpec] {
 }
 
 fn weighted(traits: &Traits, weights: &[u8; 9]) -> u8 {
-    debug_assert_eq!(weights.iter().map(|weight| *weight as u32).sum::<u32>(), 100);
-    let total: u32 = traits.values().iter().zip(weights)
+    debug_assert_eq!(
+        weights.iter().map(|weight| *weight as u32).sum::<u32>(),
+        100
+    );
+    let total: u32 = traits
+        .values()
+        .iter()
+        .zip(weights)
         .map(|(rating, weight)| u32::from(*rating) * u32::from(*weight))
         .sum();
     ((total + 50) / 100) as u8
@@ -188,15 +221,17 @@ fn weighted(traits: &Traits, weights: &[u8; 9]) -> u8 {
 
 fn leading_strength(traits: &Traits, weights: &[u8; 9]) -> &'static str {
     let values = traits.values();
-    let position = (0..9).max_by_key(|&i| u32::from(values[i]) * u32::from(weights[i])).unwrap_or(0);
+    let position = (0..9)
+        .max_by_key(|&i| u32::from(values[i]) * u32::from(weights[i]))
+        .unwrap_or(0);
     TRAIT_NAMES[position]
 }
 
 fn relevant_weakness(traits: &Traits, weights: &[u8; 9]) -> &'static str {
     let values = traits.values();
-    let position = (0..9).max_by_key(|&i| {
-        u32::from(100u8.saturating_sub(values[i])) * u32::from(weights[i])
-    }).unwrap_or(0);
+    let position = (0..9)
+        .max_by_key(|&i| u32::from(100u8.saturating_sub(values[i])) * u32::from(weights[i]))
+        .unwrap_or(0);
     TRAIT_NAMES[position]
 }
 
@@ -214,29 +249,44 @@ pub fn evaluate(
     if options.len() < 2 {
         return Err(EvaluationError::InvalidScenario);
     }
-    let actions: Vec<ActionAssessment> = options.iter().map(|option| {
-        let player_fit = weighted(&assessed.traits, &option.assessed_weights);
-        let resistance = weighted(&opponent.traits, &option.opponent_weights);
-        let vulnerability = 100u8.saturating_sub(resistance);
-        let fit = ((u16::from(player_fit) * 2 + u16::from(vulnerability) + 1) / 3) as u8;
-        ActionAssessment {
-            id: option.id.to_string(),
-            label: option.label.to_string(),
-            decision_fit_index: fit,
-            player_fit_index: player_fit,
-            opponent_resistance_index: resistance,
-            modeled_opponent_response: option.opponent_response.to_string(),
-            coaching_instruction: option.coaching.to_string(),
-            relevant_player_strength: leading_strength(&assessed.traits, &option.assessed_weights).to_string(),
-            opponent_vulnerability: relevant_weakness(&opponent.traits, &option.opponent_weights).to_string(),
-        }
-    }).collect();
+    let actions: Vec<ActionAssessment> = options
+        .iter()
+        .map(|option| {
+            let player_fit = weighted(&assessed.traits, &option.assessed_weights);
+            let resistance = weighted(&opponent.traits, &option.opponent_weights);
+            let vulnerability = 100u8.saturating_sub(resistance);
+            let fit = ((u16::from(player_fit) * 2 + u16::from(vulnerability) + 1) / 3) as u8;
+            ActionAssessment {
+                id: option.id.to_string(),
+                label: option.label.to_string(),
+                decision_fit_index: fit,
+                player_fit_index: player_fit,
+                opponent_resistance_index: resistance,
+                modeled_opponent_response: option.opponent_response.to_string(),
+                coaching_instruction: option.coaching.to_string(),
+                relevant_player_strength: leading_strength(
+                    &assessed.traits,
+                    &option.assessed_weights,
+                )
+                .to_string(),
+                opponent_vulnerability: relevant_weakness(
+                    &opponent.traits,
+                    &option.opponent_weights,
+                )
+                .to_string(),
+            }
+        })
+        .collect();
 
     // Stable tie-breaking: prefer the earlier defined action, never claim improvement on ties.
-    let best = actions.iter().enumerate().max_by_key(|(index, action)| {
-        (action.decision_fit_index, std::cmp::Reverse(*index))
-    }).map(|(index, _)| index).unwrap_or(0);
-    let delta = i16::from(actions[best].decision_fit_index) - i16::from(actions[0].decision_fit_index);
+    let best = actions
+        .iter()
+        .enumerate()
+        .max_by_key(|(index, action)| (action.decision_fit_index, std::cmp::Reverse(*index)))
+        .map(|(index, _)| index)
+        .unwrap_or(0);
+    let delta =
+        i16::from(actions[best].decision_fit_index) - i16::from(actions[0].decision_fit_index);
     let explanation = if delta > 0 {
         format!(
             "Replace '{}' with '{}'. The model favors the assessed player's {} against the opponent's relative {} vulnerability. Compare all alternatives; this is not a predicted success percentage.",
@@ -263,24 +313,72 @@ pub fn evaluate(
 
 pub fn demo_profiles(scenario: ScenarioKind) -> (PlayerProfile, PlayerProfile) {
     let forward = PlayerProfile {
-        id: "synthetic-forward-9".into(), label: "Forward 9".into(),
+        id: "synthetic-forward-9".into(),
+        label: "Forward 9".into(),
         description: "Fast, combination-focused attacker with less reliable close control".into(),
-        traits: Traits { acceleration: 92, technique: 63, passing: 85, finishing: 68, anticipation: 75, positioning: 70, reactions: 78, goalkeeping: 9, composure: 72 }, synthetic: true,
+        traits: Traits {
+            acceleration: 92,
+            technique: 63,
+            passing: 85,
+            finishing: 68,
+            anticipation: 75,
+            positioning: 70,
+            reactions: 78,
+            goalkeeping: 9,
+            composure: 72,
+        },
+        synthetic: true,
     };
     let defender = PlayerProfile {
-        id: "synthetic-centreback-4".into(), label: "Centre-back 4".into(),
+        id: "synthetic-centreback-4".into(),
+        label: "Centre-back 4".into(),
         description: "Strong anticipation and positioning, less acceleration".into(),
-        traits: Traits { acceleration: 69, technique: 68, passing: 72, finishing: 38, anticipation: 94, positioning: 94, reactions: 83, goalkeeping: 20, composure: 90 }, synthetic: true,
+        traits: Traits {
+            acceleration: 69,
+            technique: 68,
+            passing: 72,
+            finishing: 38,
+            anticipation: 94,
+            positioning: 94,
+            reactions: 83,
+            goalkeeping: 20,
+            composure: 90,
+        },
+        synthetic: true,
     };
     let keeper = PlayerProfile {
-        id: "synthetic-keeper-1".into(), label: "Goalkeeper 1".into(),
+        id: "synthetic-keeper-1".into(),
+        label: "Goalkeeper 1".into(),
         description: "Strong reactions and goalkeeping with disciplined positioning".into(),
-        traits: Traits { acceleration: 49, technique: 55, passing: 63, finishing: 20, anticipation: 79, positioning: 88, reactions: 93, goalkeeping: 94, composure: 82 }, synthetic: true,
+        traits: Traits {
+            acceleration: 49,
+            technique: 55,
+            passing: 63,
+            finishing: 20,
+            anticipation: 79,
+            positioning: 88,
+            reactions: 93,
+            goalkeeping: 94,
+            composure: 82,
+        },
+        synthetic: true,
     };
     let midfielder = PlayerProfile {
-        id: "synthetic-midfielder-8".into(), label: "Midfielder 8".into(),
+        id: "synthetic-midfielder-8".into(),
+        label: "Midfielder 8".into(),
         description: "High technique, passing and composure, moderate speed".into(),
-        traits: Traits { acceleration: 72, technique: 90, passing: 91, finishing: 82, anticipation: 80, positioning: 72, reactions: 74, goalkeeping: 8, composure: 89 }, synthetic: true,
+        traits: Traits {
+            acceleration: 72,
+            technique: 90,
+            passing: 91,
+            finishing: 82,
+            anticipation: 80,
+            positioning: 72,
+            reactions: 74,
+            goalkeeping: 8,
+            composure: 89,
+        },
+        synthetic: true,
     };
     match scenario {
         ScenarioKind::OpenPlay => (forward, defender),
@@ -300,7 +398,11 @@ mod tests {
 
     #[test]
     fn all_demo_scenarios_are_valid_and_have_three_choices() {
-        for scenario in [ScenarioKind::OpenPlay, ScenarioKind::Penalty, ScenarioKind::FreeKick] {
+        for scenario in [
+            ScenarioKind::OpenPlay,
+            ScenarioKind::Penalty,
+            ScenarioKind::FreeKick,
+        ] {
             let report = evaluate_demo(scenario);
             assert_eq!(report.actions.len(), 3);
             assert!(report.actions.iter().all(|a| a.decision_fit_index <= 100));
@@ -332,7 +434,10 @@ mod tests {
     fn invalid_player_scores_are_rejected() {
         let (mut assessed, opponent) = demo_profiles(ScenarioKind::Penalty);
         assessed.traits.composure = 101;
-        assert_eq!(evaluate(ScenarioKind::Penalty, assessed, opponent).unwrap_err(), EvaluationError::InvalidRatings);
+        assert_eq!(
+            evaluate(ScenarioKind::Penalty, assessed, opponent).unwrap_err(),
+            EvaluationError::InvalidRatings
+        );
     }
 
     #[test]
@@ -340,6 +445,9 @@ mod tests {
         let first = evaluate_demo(ScenarioKind::FreeKick);
         let second = evaluate_demo(ScenarioKind::FreeKick);
         assert_eq!(first.recommended_action_id, second.recommended_action_id);
-        assert_eq!(first.improvement_index_points, second.improvement_index_points);
+        assert_eq!(
+            first.improvement_index_points,
+            second.improvement_index_points
+        );
     }
 }
