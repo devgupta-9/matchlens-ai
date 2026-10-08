@@ -17,7 +17,7 @@ The product is an **adaptive football decision coach**: assessed-player strength
 - [x] Deterministic action fitness comparison for open play, penalties, free kicks.
 - [x] Offside *position-only* Law 11 demonstration and explicit limitations.
 - [x] Read-only endpoints for synthetic decision demos and offside position.
-- [ ] Verify all CI checks after the pivot.
+- [x] Verify all CI checks after the pivot (GitHub Actions run 37739740707).
 - [ ] Add user-editable attribute profiles with safe input validation and reranking.
 - [ ] Add dynamic opponent best-response simulation (not fixed templates).
 - [ ] Add precise spatial movement and play-state constraints.
