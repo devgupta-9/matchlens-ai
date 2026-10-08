@@ -28,7 +28,7 @@ Offside authority: IFAB Law 11, https://theifab.com/laws/latest/offside/. Offsid
 - **Decision options:** predefined, scenario-specific possible actions with explicit actor and opponent weights (each totaling 100).
 - **Reproducible score:** actor fit = weighted assessed trait score; opponent resistance = weighted opponent traits; opponent vulnerability = 100 − resistance; **decision fit index = round((2 × actor fit + vulnerability) / 3)**. 0–100 dimensionless heuristic index, **not probability**.
 - **Comparison:** Evaluate all options using exactly the same two player profiles; preserve original action as a fixed baseline, select highest fit with stable ties, show delta in **index points**.
-- **Opponent reactions:** for each action, evaluate two discrete opponent counters. The opponent chooses the largest effectiveness index from the same player profiles (stable tie-break). Response fit = round((3 × opponent weighted fit + (100 − assessed player's weighted escape fit)) / 4); suppression = round(response fit / 7). The attacking decision fit is reduced by the chosen suppression. This is synthetic best-response arbitration, not a physically simulated or learned response policy. Multi-step spatial interaction remains pending. Do not claim neural reflex measurement or calibrated real-world predictions.
+- **Opponent reactions:** for each action, evaluate two discrete opponent counters. The opponent chooses the largest effectiveness index from the same player profiles (stable tie-break). Response fit = round((3 × opponent weighted fit + (100 − assessed player's weighted escape fit)) / 4); suppression = round(response fit / 7). The attacking decision fit is reduced by the chosen suppression. This is synthetic best-response arbitration, not a physically simulated or learned response policy. The additive Phase 2A spatial API now reuses these indices after movement feasibility filtering; legacy scoring formulas remain unchanged. Do not claim neural reflex measurement or calibrated real-world predictions.
 - **Evidence:** include contributing traits and opponent vulnerabilities in output. After a real data source is introduced, require provenance, sample size, data licence, confidence and uncertainty.
 - **Rules layer:** Offside checks separate from subjective recommendations. Never have an LLM decide whether offside law applies.
 
@@ -52,9 +52,10 @@ A dual-player comparison with strengths and weaknesses, a selection of match sit
 - [x] Validated synthetic profiles, reproducible recommendation and baseline comparison.
 - [x] Offside **position-only** geometry module with rule-limit messaging.
 - [x] Browser verification: user selects each supported scenario and sees recommendation, opponent response and limitations (desktop/mobile Chromium, 8 October 2026).
-- [x] Input validation for user-edited traits and supported scenario kinds; arbitrary spatial scenario state remains pending.
+- [x] Input validation for user-edited traits and supported scenario kinds; versioned Phase 2A spatial state is validated through the new simulation endpoint.
 - [x] Deterministic discrete opponent best-response arbitration with two counter-options per attacking action.
-- [ ] Multi-step opponent action/response simulation, spatial physics and trajectories.
+- [x] Phase 2A: bounded integer spatial trajectories, opponent response, assessed-player adaptation, same-start comparisons and inspectable evidence through an additive API.
+- [ ] Phase 2B: interactive spatial scenario editing and animation; more detailed passing/interception geometry.
 - [ ] Microsoft Foundry agent workflows and evidence checker.
 - [ ] Data-backed real-player profiles, if legal access/licence can be established.
 - [ ] Full end-to-end tests and Azure deploy.

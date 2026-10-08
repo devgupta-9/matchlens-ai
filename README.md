@@ -22,7 +22,13 @@ The user starts with an assessed player, a specific opponent and a football situ
 - Next.js interface for the decision lab and legacy synthetic match replay.
 - Automated format/lint/test/build CI.
 
-**Not implemented:** real-player scouting data, continuous spatial opponent simulation, Microsoft Foundry model calls, physical ball dynamics, calibrated outcome predictions or Azure deployment.
+**Phase 2A:** a bounded deterministic spatial open-play simulator is available at
+`POST /api/v1/simulations/open-play`. It compares an initial decision with tactical
+adaptations under identical starting conditions and records movement and counter
+evidence. See [the API contract](docs/SPATIAL_SIMULATION_CONTRACT.md) and
+[verification report](docs/PHASE_2A_VERIFICATION.md).
+
+**Not implemented:** real-player scouting data, continuous optimal opponent simulation, Microsoft Foundry model calls, realistic ball physics, calibrated outcome predictions or Azure deployment.
 
 ## Requirements
 

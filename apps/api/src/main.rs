@@ -1,5 +1,7 @@
 use std::{convert::Infallible, time::Duration};
 
+mod simulations;
+
 use axum::{
     extract::{DefaultBodyLimit, Query},
     http::{header, HeaderValue, Method, StatusCode},
@@ -157,6 +159,7 @@ fn app() -> Router {
         .allow_headers([header::CONTENT_TYPE]);
 
     Router::new()
+        .merge(simulations::router())
         .route("/api/v1/health", get(health))
         .route("/api/v1/matches/demo/events", get(events))
         .route("/api/v1/matches/demo/snapshot", get(snapshot))
