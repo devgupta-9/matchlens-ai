@@ -1,7 +1,7 @@
 //! Deterministic, validated event replay. No external sports feeds are used.
-use std::collections::HashSet;
 use matchlens_analytics::summarize;
 use matchlens_shared::{EventKind, MatchEvent, MatchSnapshot, PitchPosition, Score, Team};
+use std::collections::HashSet;
 use thiserror::Error;
 
 #[derive(Debug, Error, PartialEq)]
@@ -14,7 +14,11 @@ pub enum ReplayError {
     MissingPlayer(u64),
 }
 
-pub fn snapshot_at(match_id: &str, events: &[MatchEvent], at_seconds: u32) -> Result<MatchSnapshot, ReplayError> {
+pub fn snapshot_at(
+    match_id: &str,
+    events: &[MatchEvent],
+    at_seconds: u32,
+) -> Result<MatchSnapshot, ReplayError> {
     let mut ids = HashSet::new();
     for event in events {
         if !ids.insert(event.id) {
@@ -32,7 +36,8 @@ pub fn snapshot_at(match_id: &str, events: &[MatchEvent], at_seconds: u32) -> Re
         }
     }
 
-    let mut selected: Vec<MatchEvent> = events.iter()
+    let mut selected: Vec<MatchEvent> = events
+        .iter()
         .filter(|event| event.timestamp_seconds <= at_seconds)
         .cloned()
         .collect();
@@ -59,9 +64,20 @@ pub fn snapshot_at(match_id: &str, events: &[MatchEvent], at_seconds: u32) -> Re
 
 /// Explicitly fictional event records used for demos and tests only.
 pub fn demo_events() -> Vec<MatchEvent> {
-    fn event(id: u64, time: u32, team: Team, kind: EventKind, player: &str, x: f32, y: f32) -> MatchEvent {
+    fn event(
+        id: u64,
+        time: u32,
+        team: Team,
+        kind: EventKind,
+        player: &str,
+        x: f32,
+        y: f32,
+    ) -> MatchEvent {
         MatchEvent {
-            id, timestamp_seconds: time, team, kind,
+            id,
+            timestamp_seconds: time,
+            team,
+            kind,
             player: player.to_string(),
             position: PitchPosition { x, y },
         }
@@ -72,7 +88,15 @@ pub fn demo_events() -> Vec<MatchEvent> {
         event(3, 85, Team::Away, EventKind::Tackle, "Away 4", 54.0, 37.0),
         event(4, 120, Team::Away, EventKind::Pass, "Away 10", 65.0, 67.0),
         event(5, 180, Team::Away, EventKind::Shot, "Away 9", 86.0, 47.0),
-        event(6, 245, Team::Home, EventKind::Turnover, "Home 5", 35.0, 60.0),
+        event(
+            6,
+            245,
+            Team::Home,
+            EventKind::Turnover,
+            "Home 5",
+            35.0,
+            60.0,
+        ),
         event(7, 300, Team::Home, EventKind::Pass, "Home 7", 64.0, 42.0),
         event(8, 365, Team::Home, EventKind::Shot, "Home 11", 86.0, 55.0),
         event(9, 420, Team::Home, EventKind::Goal, "Home 9", 92.0, 48.0),
@@ -96,18 +120,27 @@ mod tests {
     fn replay_is_order_independent() {
         let events = demo_events();
         let reversed: Vec<_> = events.iter().rev().cloned().collect();
-        assert_eq!(snapshot_at("demo", &events, 420).unwrap(), snapshot_at("demo", &reversed, 420).unwrap());
+        assert_eq!(
+            snapshot_at("demo", &events, 420).unwrap(),
+            snapshot_at("demo", &reversed, 420).unwrap()
+        );
     }
     #[test]
     fn invalid_coordinates_rejected() {
         let mut events = demo_events();
         events[0].position.x = 101.0;
-        assert_eq!(snapshot_at("demo", &events, 420).unwrap_err(), ReplayError::InvalidPosition(1));
+        assert_eq!(
+            snapshot_at("demo", &events, 420).unwrap_err(),
+            ReplayError::InvalidPosition(1)
+        );
     }
     #[test]
     fn duplicate_ids_rejected() {
         let mut events = demo_events();
         events[1].id = 1;
-        assert_eq!(snapshot_at("demo", &events, 420).unwrap_err(), ReplayError::DuplicateId(1));
+        assert_eq!(
+            snapshot_at("demo", &events, 420).unwrap_err(),
+            ReplayError::DuplicateId(1)
+        );
     }
 }
