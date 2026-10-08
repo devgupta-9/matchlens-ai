@@ -39,8 +39,11 @@ mod tests {
     #[test]
     fn goal_counts_as_shot() {
         let event = MatchEvent {
-            id: 1, timestamp_seconds: 42, team: Team::Home,
-            kind: EventKind::Goal, player: "Forward".into(),
+            id: 1,
+            timestamp_seconds: 42,
+            team: Team::Home,
+            kind: EventKind::Goal,
+            player: "Forward".into(),
             position: PitchPosition { x: 90.0, y: 50.0 },
         };
         let result = summarize(&[event]);
