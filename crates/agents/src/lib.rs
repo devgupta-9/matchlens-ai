@@ -19,10 +19,22 @@ pub struct AgentStep {
 /// Describes planned handoffs, not an active AI or model invocation.
 pub fn planned_workflow() -> Vec<AgentStep> {
     vec![
-        AgentStep { role: AgentRole::TacticalAnalyst, description: "Interpret supplied deterministic analytics".into() },
-        AgentStep { role: AgentRole::NarrativeWriter, description: "Draft evidence-linked match narrative".into() },
-        AgentStep { role: AgentRole::AudiencePersonalizer, description: "Adapt tone and language for audience".into() },
-        AgentStep { role: AgentRole::EvidenceValidator, description: "Check claims against source event identifiers".into() },
+        AgentStep {
+            role: AgentRole::TacticalAnalyst,
+            description: "Interpret supplied deterministic analytics".into(),
+        },
+        AgentStep {
+            role: AgentRole::NarrativeWriter,
+            description: "Draft evidence-linked match narrative".into(),
+        },
+        AgentStep {
+            role: AgentRole::AudiencePersonalizer,
+            description: "Adapt tone and language for audience".into(),
+        },
+        AgentStep {
+            role: AgentRole::EvidenceValidator,
+            description: "Check claims against source event identifiers".into(),
+        },
     ]
 }
 
@@ -31,6 +43,9 @@ mod tests {
     use super::*;
     #[test]
     fn validator_is_final_step() {
-        assert_eq!(planned_workflow().last().unwrap().role, AgentRole::EvidenceValidator);
+        assert_eq!(
+            planned_workflow().last().unwrap().role,
+            AgentRole::EvidenceValidator
+        );
     }
 }
