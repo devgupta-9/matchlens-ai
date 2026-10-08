@@ -1,5 +1,6 @@
-import DecisionLab from "./decision-lab";
 "use client";
+
+import DecisionLab from "./decision-lab";
 
 import { useEffect, useState } from "react";
 
