@@ -11,8 +11,9 @@ use futures_util::{stream, Stream};
 use matchlens_match_engine::{demo_events, snapshot_at};
 use matchlens_shared::{MatchEvent, MatchSnapshot};
 use reaction_decision_engine::{
-    evaluate, evaluate_demo, MatchupReport, PlayerProfile, ScenarioKind,
+    evaluate, evaluate_demo,
     offside::{assess_position, OffsideAssessment, OffsideFrame},
+    MatchupReport, PlayerProfile, ScenarioKind,
 };
 use serde::{Deserialize, Serialize};
 use tower_http::{cors::CorsLayer, trace::TraceLayer};
@@ -82,7 +83,6 @@ async fn event_stream() -> Sse<impl Stream<Item = Result<Event, Infallible>>> {
     Sse::new(stream).keep_alive(KeepAlive::default())
 }
 
-
 #[derive(Deserialize)]
 struct DecisionQuery {
     scenario: Option<String>,
@@ -112,19 +112,20 @@ async fn offside_demo() -> Json<OffsideDemo> {
         attacker_forward_edge: 79.0,
         ball_forward_edge: 65.0,
         second_last_opponent_forward_edge: 74.0,
-    }).expect("valid demo frame");
+    })
+    .expect("valid demo frame");
     let corrected = assess_position(OffsideFrame {
         attacker_forward_edge: 73.0,
         ball_forward_edge: 65.0,
         second_last_opponent_forward_edge: 74.0,
-    }).expect("valid demo frame");
+    })
+    .expect("valid demo frame");
     Json(OffsideDemo {
         original,
         corrected,
         correction: "At the same synthetic pass instant, delay the attacking run so the relevant body edge stays level with or behind the second-last opponent. This demonstrates position only, not a complete Law 11 offence decision.",
     })
 }
-
 
 #[derive(Deserialize)]
 struct EvaluationInput {
