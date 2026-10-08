@@ -1,17 +1,17 @@
 use std::{convert::Infallible, time::Duration};
 
 use axum::{
-    extract::Query,
+    extract::{DefaultBodyLimit, Query},
     http::{header, HeaderValue, Method, StatusCode},
     response::sse::{Event, KeepAlive, Sse},
-    routing::get,
+    routing::{get, post},
     Json, Router,
 };
 use futures_util::{stream, Stream};
 use matchlens_match_engine::{demo_events, snapshot_at};
 use matchlens_shared::{MatchEvent, MatchSnapshot};
 use reaction_decision_engine::{
-    evaluate_demo, MatchupReport, ScenarioKind,
+    evaluate, evaluate_demo, MatchupReport, PlayerProfile, ScenarioKind,
     offside::{assess_position, OffsideAssessment, OffsideFrame},
 };
 use serde::{Deserialize, Serialize};
@@ -125,6 +125,26 @@ async fn offside_demo() -> Json<OffsideDemo> {
     })
 }
 
+
+#[derive(Deserialize)]
+struct EvaluationInput {
+    scenario: ScenarioKind,
+    assessed_player: PlayerProfile,
+    opponent: PlayerProfile,
+}
+
+async fn custom_evaluation(
+    Json(mut input): Json<EvaluationInput>,
+) -> Result<Json<MatchupReport>, (StatusCode, &'static str)> {
+    // Public demo input is always treated as synthetic, even if a client
+    // attempts to submit a named profile claiming to be verified scouting data.
+    input.assessed_player.synthetic = true;
+    input.opponent.synthetic = true;
+    evaluate(input.scenario, input.assessed_player, input.opponent)
+        .map(Json)
+        .map_err(|_| (StatusCode::BAD_REQUEST, "invalid synthetic player ratings"))
+}
+
 fn app() -> Router {
     let origin = std::env::var("WEB_ORIGIN").unwrap_or_else(|_| "http://localhost:3000".into());
     let origin: HeaderValue = origin
@@ -132,7 +152,7 @@ fn app() -> Router {
         .expect("WEB_ORIGIN must be a valid header value");
     let cors = CorsLayer::new()
         .allow_origin(origin)
-        .allow_methods([Method::GET])
+        .allow_methods([Method::GET, Method::POST])
         .allow_headers([header::CONTENT_TYPE]);
 
     Router::new()
@@ -141,7 +161,9 @@ fn app() -> Router {
         .route("/api/v1/matches/demo/snapshot", get(snapshot))
         .route("/api/v1/matches/demo/stream", get(event_stream))
         .route("/api/v1/decision-lab/demo", get(decision_demo))
+        .route("/api/v1/decision-lab/evaluate", post(custom_evaluation))
         .route("/api/v1/offside/demo", get(offside_demo))
+        .layer(DefaultBodyLimit::max(16 * 1024))
         .layer(cors)
         .layer(TraceLayer::new_for_http())
 }
@@ -221,6 +243,58 @@ mod tests {
         let json: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
         assert_eq!(json["original"]["position"], "offside_position");
         assert_eq!(json["corrected"]["position"], "onside_position");
+    }
+
+    #[tokio::test]
+    async fn edited_strengths_can_change_recommended_action() {
+        use reaction_decision_engine::demo_profiles;
+        let (mut assessed, opponent) = demo_profiles(ScenarioKind::OpenPlay);
+        assessed.traits.acceleration = 5;
+        assessed.traits.technique = 100;
+        assessed.traits.composure = 100;
+        assessed.traits.passing = 5;
+        let json = serde_json::json!({
+            "scenario": "open_play",
+            "assessed_player": assessed,
+            "opponent": opponent
+        });
+        let response = app()
+            .oneshot(
+                Request::builder()
+                    .method(Method::POST)
+                    .uri("/api/v1/decision-lab/evaluate")
+                    .header(header::CONTENT_TYPE, "application/json")
+                    .body(Body::from(json.to_string()))
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::OK);
+        let bytes = to_bytes(response.into_body(), 1024 * 1024).await.unwrap();
+        let report: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+        assert_eq!(report["recommended_action_id"], "direct_dribble");
+    }
+
+    #[tokio::test]
+    async fn edited_out_of_range_ratings_are_rejected() {
+        use reaction_decision_engine::demo_profiles;
+        let (mut assessed, opponent) = demo_profiles(ScenarioKind::Penalty);
+        assessed.traits.acceleration = 120;
+        let payload = serde_json::json!({
+            "scenario": "penalty", "assessed_player": assessed, "opponent": opponent
+        });
+        let response = app()
+            .oneshot(
+                Request::builder()
+                    .method(Method::POST)
+                    .uri("/api/v1/decision-lab/evaluate")
+                    .header(header::CONTENT_TYPE, "application/json")
+                    .body(Body::from(payload.to_string()))
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::BAD_REQUEST);
     }
 
     #[tokio::test]
