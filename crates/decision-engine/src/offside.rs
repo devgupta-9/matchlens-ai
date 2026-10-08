@@ -29,11 +29,20 @@ pub struct OffsideAssessment {
 }
 
 pub fn assess_position(frame: OffsideFrame) -> Option<OffsideAssessment> {
-    let numbers = [frame.attacker_forward_edge, frame.ball_forward_edge, frame.second_last_opponent_forward_edge];
-    if numbers.iter().any(|n| !n.is_finite() || !(0.0..=100.0).contains(n)) {
+    let numbers = [
+        frame.attacker_forward_edge,
+        frame.ball_forward_edge,
+        frame.second_last_opponent_forward_edge,
+    ];
+    if numbers
+        .iter()
+        .any(|n| !n.is_finite() || !(0.0..=100.0).contains(n))
+    {
         return None;
     }
-    let line = frame.ball_forward_edge.max(frame.second_last_opponent_forward_edge);
+    let line = frame
+        .ball_forward_edge
+        .max(frame.second_last_opponent_forward_edge);
     let offside = frame.attacker_forward_edge > 50.0 && frame.attacker_forward_edge > line;
     Some(OffsideAssessment {
         position: if offside { OffsidePosition::OffsidePosition } else { OffsidePosition::OnsidePosition },
@@ -53,26 +62,51 @@ mod tests {
     use super::*;
     #[test]
     fn ahead_of_ball_and_second_last_opponent_is_offside_position() {
-        let outcome = assess_position(OffsideFrame { attacker_forward_edge: 79.0, ball_forward_edge: 65.0, second_last_opponent_forward_edge: 74.0 }).unwrap();
+        let outcome = assess_position(OffsideFrame {
+            attacker_forward_edge: 79.0,
+            ball_forward_edge: 65.0,
+            second_last_opponent_forward_edge: 74.0,
+        })
+        .unwrap();
         assert_eq!(outcome.position, OffsidePosition::OffsidePosition);
     }
     #[test]
     fn level_with_second_last_opponent_is_onside_position() {
-        let outcome = assess_position(OffsideFrame { attacker_forward_edge: 74.0, ball_forward_edge: 65.0, second_last_opponent_forward_edge: 74.0 }).unwrap();
+        let outcome = assess_position(OffsideFrame {
+            attacker_forward_edge: 74.0,
+            ball_forward_edge: 65.0,
+            second_last_opponent_forward_edge: 74.0,
+        })
+        .unwrap();
         assert_eq!(outcome.position, OffsidePosition::OnsidePosition);
     }
     #[test]
     fn cannot_be_offside_position_in_own_half() {
-        let outcome = assess_position(OffsideFrame { attacker_forward_edge: 49.0, ball_forward_edge: 20.0, second_last_opponent_forward_edge: 40.0 }).unwrap();
+        let outcome = assess_position(OffsideFrame {
+            attacker_forward_edge: 49.0,
+            ball_forward_edge: 20.0,
+            second_last_opponent_forward_edge: 40.0,
+        })
+        .unwrap();
         assert_eq!(outcome.position, OffsidePosition::OnsidePosition);
     }
     #[test]
     fn ball_ahead_of_attacker_is_onside_position() {
-        let outcome = assess_position(OffsideFrame { attacker_forward_edge: 73.0, ball_forward_edge: 80.0, second_last_opponent_forward_edge: 60.0 }).unwrap();
+        let outcome = assess_position(OffsideFrame {
+            attacker_forward_edge: 73.0,
+            ball_forward_edge: 80.0,
+            second_last_opponent_forward_edge: 60.0,
+        })
+        .unwrap();
         assert_eq!(outcome.position, OffsidePosition::OnsidePosition);
     }
     #[test]
     fn invalid_coordinates_rejected() {
-        assert!(assess_position(OffsideFrame { attacker_forward_edge: f32::NAN, ball_forward_edge: 64.0, second_last_opponent_forward_edge: 70.0 }).is_none());
+        assert!(assess_position(OffsideFrame {
+            attacker_forward_edge: f32::NAN,
+            ball_forward_edge: 64.0,
+            second_last_opponent_forward_edge: 70.0
+        })
+        .is_none());
     }
 }
