@@ -280,6 +280,8 @@ pub fn evaluate(
             // This is an illustrative penalty, NOT a calibrated expected-goals model.
             let suppression = ((u16::from(chosen.effectiveness_index) + 3) / 7) as u8;
             let fit = uncountered.saturating_sub(suppression);
+            let selected_response_id = chosen.id.clone();
+            let selected_response_description = format!("{}: {}", chosen.label, chosen.explanation);
             ActionAssessment {
                 id: option.id.to_string(),
                 label: option.label.to_string(),
@@ -288,9 +290,9 @@ pub fn evaluate(
                 opponent_resistance_index: resistance,
                 uncountered_fit_index: uncountered,
                 counter_suppression_points: suppression,
-                chosen_opponent_response_id: chosen.id.clone(),
+                chosen_opponent_response_id: selected_response_id,
                 opponent_responses: responses,
-                modeled_opponent_response: format!("{}: {}", chosen.label, chosen.explanation),
+                modeled_opponent_response: selected_response_description,
                 coaching_instruction: option.coaching.to_string(),
                 relevant_player_strength: leading_strength(
                     &assessed.traits,
