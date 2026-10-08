@@ -4,11 +4,13 @@
 
 The product is an **adaptive football decision coach**: assessed-player strengths and weaknesses, opponent vulnerabilities, scenario rules, counterfactual options, opponent responses and concrete correction advice.
 
-## Proper Task 1 — Foundation (In progress)
+## Proper Task 1 — Foundation (Done locally)
 - [x] Rust + Next.js workspace, synthetic replay and Axum/SSE.
 - [x] GitHub CI format, lint, test and build passed on initial foundation.
-- [ ] Generate and commit Cargo.lock and apps/web/package-lock.json.
-- [ ] End-to-end browser replay verification and responsive QA.
+- [x] Generate and commit Cargo.lock and apps/web/package-lock.json.
+- [x] End-to-end browser replay verification and desktop/mobile overflow checks.
+- [x] Local Rust formatting, Clippy, workspace tests, Next.js lint/types/build, and browser regressions (8 October 2026).
+- [ ] Verify the revised CI workflow remotely after an authorized push.
 - [x] Rename GitHub repository to reactcoach-11 and confirm branch/PR history.
 - [x] Innovation Studio naming and project details updated (owner confirmed).
 

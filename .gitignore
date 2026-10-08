@@ -14,6 +14,9 @@ rustc-ice-*.txt
 **/coverage/
 **/*.tsbuildinfo
 **/.vercel/
+**/test-results/
+**/playwright-report/
+.local/
 
 # Secrets
 .env

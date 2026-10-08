@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./decision-lab.css";
 
 type Scenario = "open_play" | "penalty" | "free_kick" | "offside";
@@ -55,6 +55,7 @@ export default function DecisionLab() {
   const [loading, setLoading] = useState(true);
   const [recalculating, setRecalculating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const evaluationController = useRef<AbortController | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -79,11 +80,18 @@ export default function DecisionLab() {
         if (!controller.signal.aborted) setError(cause instanceof Error ? cause.message : "Unknown API error");
       })
       .finally(() => { if (!controller.signal.aborted) setLoading(false); });
-    return () => controller.abort();
+    return () => {
+      controller.abort();
+      evaluationController.current?.abort();
+      evaluationController.current = null;
+    };
   }, [mode]);
 
   function selectMode(next: Scenario) {
     if (next === mode) return;
+    evaluationController.current?.abort();
+    evaluationController.current = null;
+    setRecalculating(false);
     setMode(next);
     setLoading(true);
     setReport(null);
@@ -103,7 +111,9 @@ export default function DecisionLab() {
   }
 
   async function recalculate() {
-    if (!report || !profiles || recalculating) return;
+    if (!report || !profiles || recalculating || mode === "offside") return;
+    const controller = new AbortController();
+    evaluationController.current = controller;
     setRecalculating(true);
     setError(null);
     try {
@@ -111,19 +121,26 @@ export default function DecisionLab() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ scenario: mode, ...profiles }),
+        signal: controller.signal,
       });
       if (!result.ok) throw new Error(`Evaluation returned HTTP ${result.status}`);
       const updated = (await result.json()) as MatchupReport;
-      setReport(updated);
+      if (!controller.signal.aborted) setReport(updated);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Unable to recalculate");
+      if (!controller.signal.aborted) setError(cause instanceof Error ? cause.message : "Unable to recalculate");
     } finally {
-      setRecalculating(false);
+      if (evaluationController.current === controller) {
+        evaluationController.current = null;
+        setRecalculating(false);
+      }
     }
   }
 
   const original = report?.actions.find((item) => item.id === report.original_action_id);
   const best = report?.actions.find((item) => item.id === report.recommended_action_id);
+  const pendingEdits = report && profiles && (["assessed_player", "opponent"] as const).some(
+    (player) => labeledTraits.some(({ key }) => profiles[player].traits[key] !== report[player].traits[key]),
+  );
   return (
     <section className="rx-lab" aria-labelledby="rx-title">
       <div className="rx-heading">
@@ -150,16 +167,17 @@ export default function DecisionLab() {
         <div className="rx-body">
           <div className="rx-profile-grid">
             <div className="rx-profile"><small>ASSESSED PLAYER</small><h3>{profiles.assessed_player.label}</h3><p>{profiles.assessed_player.description}</p>
-              <div className="rx-traits">{labeledTraits.map(({ key, label }) => <label key={key} className="rx-trait"><span>{label}<b>{profiles.assessed_player.traits[key]}</b></span><input type="range" min={0} max={100} value={profiles.assessed_player.traits[key]} onChange={(event) => editTrait("assessed_player", key, Number(event.target.value))} aria-label={`Assessed player ${label}`} /></label>)}</div>
+              <div className="rx-traits">{labeledTraits.map(({ key, label }) => <label key={key} className="rx-trait"><span>{label}<b>{profiles.assessed_player.traits[key]}</b></span><input type="range" min={0} max={100} value={profiles.assessed_player.traits[key]} disabled={recalculating} onChange={(event) => editTrait("assessed_player", key, Number(event.target.value))} aria-label={`Assessed player ${label}`} /></label>)}</div>
             </div>
             <div className="rx-profile"><small>OPPOSING PLAYER</small><h3>{profiles.opponent.label}</h3><p>{profiles.opponent.description}</p>
-              <div className="rx-traits">{labeledTraits.map(({ key, label }) => <label key={key} className="rx-trait"><span>{label}<b>{profiles.opponent.traits[key]}</b></span><input type="range" min={0} max={100} value={profiles.opponent.traits[key]} onChange={(event) => editTrait("opponent", key, Number(event.target.value))} aria-label={`Opponent ${label}`} /></label>)}</div>
+              <div className="rx-traits">{labeledTraits.map(({ key, label }) => <label key={key} className="rx-trait"><span>{label}<b>{profiles.opponent.traits[key]}</b></span><input type="range" min={0} max={100} value={profiles.opponent.traits[key]} disabled={recalculating} onChange={(event) => editTrait("opponent", key, Number(event.target.value))} aria-label={`Opponent ${label}`} /></label>)}</div>
             </div>
           </div>
           <div className="rx-actions">
             <button type="button" onClick={() => void recalculate()} disabled={recalculating}>{recalculating ? "Evaluating..." : "Recalculate with these strengths →"}</button>
             <span>All ratings are editable synthetic assumptions. Recalculation reruns the same Rust model.</span>
           </div>
+          {pendingEdits && <p className="rx-footnote" role="status">Ratings changed. Recalculate to update the recommendation; displayed results use the last evaluated ratings.</p>}
           <div className="rx-section-title">Original decision vs. recommended correction</div>
           <div className="rx-comparison">
             {original && <div className="rx-choice"><small>ORIGINAL ACTION</small><h3>{original.label}</h3><div className="rx-score">{original.decision_fit_index}<span>/100 fit index</span></div><ScoreBar score={original.decision_fit_index} muted /><p>{original.modeled_opponent_response}</p></div>}

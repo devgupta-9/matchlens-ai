@@ -51,8 +51,8 @@ A dual-player comparison with strengths and weaknesses, a selection of match sit
 - [x] Three modeled decision scenarios available from Rust.
 - [x] Validated synthetic profiles, reproducible recommendation and baseline comparison.
 - [x] Offside **position-only** geometry module with rule-limit messaging.
-- [ ] Full browser verification: user selects a scenario and sees recommendation, opponent response and limitations.
-- [ ] Input validation for user-edited traits and scenario state.
+- [x] Browser verification: user selects each supported scenario and sees recommendation, opponent response and limitations (desktop/mobile Chromium, 8 October 2026).
+- [x] Input validation for user-edited traits and supported scenario kinds; arbitrary spatial scenario state remains pending.
 - [x] Deterministic discrete opponent best-response arbitration with two counter-options per attacking action.
 - [ ] Multi-step opponent action/response simulation, spatial physics and trajectories.
 - [ ] Microsoft Foundry agent workflows and evidence checker.

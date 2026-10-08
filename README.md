@@ -26,7 +26,8 @@ The user starts with an assessed player, a specific opponent and a football situ
 
 ## Requirements
 
-Rust stable (>=1.80), Node.js 22+, npm.
+Rust stable (>=1.85), with rustfmt and Clippy, Node.js 22+, npm.
+The committed dependency graph includes `hyper-util`, which requires Rust 1.85.
 
 Run API:
 ```sh
@@ -36,11 +37,22 @@ cargo run -p reactcoach-api
 Run frontend (new terminal):
 ```sh
 cd apps/web
-npm install
+npm ci
 npm run dev
 ```
 
 Open http://localhost:3000.
+
+On Windows, if Cargo is not on PATH, the local setup used for verification can
+be invoked from the repository root with `powershell -NoProfile -File scripts/cargo.ps1 run -p reactcoach-api --locked`.
+The wrapper uses the isolated toolchain under `%LOCALAPPDATA%\ReactCoach11\tools`
+when present; it does not install tools or change the system PATH. A conventional
+Rust installation on PATH takes precedence. The isolated GNU setup uses portable
+LLVM MinGW for `dlltool` and Rust's bundled GCC runtime libraries.
+
+The API reads shell environment variables (see `apps/api/.env.example`), not a
+dotenv file. Next.js reads `apps/web/.env.local`. Its public API URL is embedded
+at build time, so rebuild if it changes.
 
 ## Synthetic endpoints
 
@@ -57,12 +69,27 @@ curl -N http://localhost:8080/api/v1/matches/demo/stream
 
 ```sh
 cargo fmt --all -- --check
-cargo clippy --workspace --all-targets -- -D warnings
-cargo test --workspace
+cargo clippy --workspace --all-targets --locked -- -D warnings
+cargo test --workspace --locked
 cd apps/web && npm run lint && npm run typecheck && npm run build
 ```
 
-Dependency lockfiles must be generated, committed, and verified before final merge.
+Both dependency lockfiles are committed. CI installs with `npm ci` and uses
+`--locked` for Rust checks.
+
+Browser checks against the production frontend and local Rust API:
+
+```sh
+cd apps/web
+npx playwright install chromium
+npm run build
+npm run test:e2e
+```
+
+Playwright starts missing local servers and checks desktop and mobile Chromium.
+It reuses servers already running outside CI. Do not point these tests at production.
+Screenshots and failure traces are written to ignored `apps/web/test-results/`.
+See [Phase 1 verification and prioritized plan](docs/PHASE_1_VERIFICATION.md).
 
 ## Architecture / scope
 

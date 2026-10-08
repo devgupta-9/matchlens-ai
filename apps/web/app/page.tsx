@@ -49,14 +49,16 @@ export default function HomePage() {
 
   useEffect(() => {
     let active = true;
+    let latestRequest = 0;
     async function refresh(at: number) {
+      const request = ++latestRequest;
       try {
         const response = await fetch(`${api}/api/v1/matches/demo/snapshot?at=${at}`, { cache: "no-store" });
         if (!response.ok) throw new Error(`Snapshot HTTP ${response.status}`);
         const data = (await response.json()) as MatchSnapshot;
-        if (active) { setSnapshot(data); setError(null); }
+        if (active && request === latestRequest) { setSnapshot(data); setError(null); }
       } catch (cause) {
-        if (active) setError(cause instanceof Error ? cause.message : "API unavailable");
+        if (active && request === latestRequest) setError(cause instanceof Error ? cause.message : "API unavailable");
       }
     }
     void refresh(0);

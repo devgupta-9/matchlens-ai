@@ -11,12 +11,37 @@ Synthetic events (fictional, checked into Rust source)
 ```
 
 Rust workspace:
+- `crates/decision-engine`: validated synthetic traits, scenario action scores,
+  discrete opponent best-response arbitration, and separate offside-position geometry.
 - `crates/shared`: serializable event, statistics, snapshot contracts.
 - `crates/analytics`: counts discrete actions; explicitly avoids a misleading time-possession estimate.
 - `crates/match-engine`: validates coordinates/IDs and computes reproducible snapshots at any time.
 - `crates/agents`: planned roles and handoff schema. **No real model calls implemented.**
 - `apps/api`: Axum REST/SSE API with tracing and origin-restricted CORS.
 - `apps/web`: Next.js presentation.
+
+The decision-coaching path is separate from synthetic match replay:
+
+```text
+Editable synthetic assessed-player and opponent profiles + scenario
+    -> Axum validation (16 KB request limit; public inputs marked synthetic)
+    -> Rust evaluates three actions using the same starting profiles
+    -> Rust evaluates two counters per action and selects the strongest counter
+    -> Counter suppression reduces the action's heuristic fit index
+    -> Original / recommended action, index-point delta, and template coaching text
+    -> Next.js comparison and opponent counter review
+```
+
+The current engine compares a single decision with a discrete response. It has
+no position, velocity, acceleration trajectory, ball-flight or elapsed-time state.
+Profile `acceleration` is a synthetic trait index, not a physical acceleration.
+Offside is a separate scalar position check at the pass instant; it is not a
+complete Law 11 offence assessment. Coaching explanations are deterministic
+templates. No Foundry agents execute these calculations or generate text yet.
+
+Scenario changes cancel pending evaluations. Profile editing is paused during
+evaluation, and unapplied edits are labeled. Replay snapshot responses are applied
+only if they belong to the most recently requested snapshot.
 
 ## Data integrity and AI safety
 
@@ -39,6 +64,9 @@ Rust workspace:
 | HTTP | Path | Response |
 | --- | --- | --- |
 | GET | /api/v1/health | service status |
+| GET | /api/v1/decision-lab/demo?scenario=open_play | synthetic matchup (also penalty, free_kick) |
+| POST | /api/v1/decision-lab/evaluate | validated editable profiles and matchup report |
+| GET | /api/v1/offside/demo | original and corrected offside-position examples |
 | GET | /api/v1/matches/demo/events | all demo events |
 | GET | /api/v1/matches/demo/snapshot?at=420 | deterministic snapshot at second |
 | GET | /api/v1/matches/demo/stream | replay SSE: match-event, replay-complete |
