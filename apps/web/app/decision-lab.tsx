@@ -51,17 +51,12 @@ export default function DecisionLab() {
   const [report, setReport] = useState<MatchupReport | null>(null);
   const [offside, setOffside] = useState<OffsideDemo | null>(null);
   const [profiles, setProfiles] = useState<{ assessed_player: PlayerProfile; opponent: PlayerProfile } | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [recalculating, setRecalculating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
-    setLoading(true);
-    setReport(null);
-    setOffside(null);
-    setProfiles(null);
-    setError(null);
     const path = mode === "offside"
       ? "/api/v1/offside/demo"
       : `/api/v1/decision-lab/demo?scenario=${mode}`;
@@ -85,6 +80,16 @@ export default function DecisionLab() {
       .finally(() => { if (!controller.signal.aborted) setLoading(false); });
     return () => controller.abort();
   }, [mode]);
+
+  function selectMode(next: Scenario) {
+    if (next === mode) return;
+    setMode(next);
+    setLoading(true);
+    setReport(null);
+    setOffside(null);
+    setProfiles(null);
+    setError(null);
+  }
 
   function editTrait(player: "assessed_player" | "opponent", trait: TraitName, value: number) {
     setProfiles((previous) => previous && ({
@@ -125,7 +130,7 @@ export default function DecisionLab() {
         <span className="rx-tag">SYNTHETIC / EXPLAINABLE</span>
       </div>
       <div className="rx-tabs" role="group" aria-label="Football situation">
-        {modes.map((item) => <button key={item.id} type="button" className={`rx-tab ${mode === item.id ? "active" : ""}`} aria-pressed={mode === item.id} onClick={() => setMode(item.id)}><strong>{item.title}</strong><small>{item.description}</small></button>)}
+        {modes.map((item) => <button key={item.id} type="button" className={`rx-tab ${mode === item.id ? "active" : ""}`} aria-pressed={mode === item.id} onClick={() => selectMode(item.id)}><strong>{item.title}</strong><small>{item.description}</small></button>)}
       </div>
       {loading && <div className="rx-message" role="status">Evaluating synthetic scenario...</div>}
       {error && <div className="rx-message rx-error" role="alert">{error}. Start the Rust API on port 8080 to use the decision lab.</div>}
@@ -160,7 +165,7 @@ export default function DecisionLab() {
             {best && <div className="rx-choice rx-choice-best"><small>HIGHEST-FIT OPTION</small><h3>{best.label}</h3><div className="rx-score">{best.decision_fit_index}<span>/100 fit index</span></div><ScoreBar score={best.decision_fit_index} /><p>{best.coaching_instruction}</p></div>}
           </div>
           <div className="rx-gain"><strong>{report.improvement_index_points > 0 ? "+" : ""}{report.improvement_index_points} fit-index points</strong><span>Model comparison, not probability of success</span></div>
-          <div className="rx-explanation"><strong>Why the recommendation changes</strong><p>{report.explanation}</p><p><strong>Opponent's modeled response:</strong> {best?.modeled_opponent_response}</p></div>
+          <div className="rx-explanation"><strong>Why the recommendation changes</strong><p>{report.explanation}</p><p><strong>Opponent&apos;s modeled response:</strong> {best?.modeled_opponent_response}</p></div>
           <div className="rx-alternatives"><small>ALL MODELED ACTIONS</small>{report.actions.map((a) => <div key={a.id}><span>{a.label}</span><strong>{a.decision_fit_index}/100</strong></div>)}</div>
           <p className="rx-footnote">{report.limitations}</p>
         </div>
