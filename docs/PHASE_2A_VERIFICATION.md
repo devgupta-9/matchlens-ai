@@ -1,11 +1,12 @@
 # Phase 2A verification and handoff
 
-Verified locally on 8 October 2026, on `feat/phase-2-spatial-rollout`, forked from
+Historical local verification on 8 October 2026, on `feat/phase-2-spatial-rollout`, forked from
 the clean, fetched `feat/phase-1-foundation` commit
-`bc2994d18f8428f5654f1e5894f7b58ae9d77381`. Phase 2 remains local, with no push or
+`bc2994d18f8428f5654f1e5894f7b58ae9d77381`. At that snapshot, Phase 2 remained local, with no push or
 merge into main, deployment, paid service or global AI configuration change.
 The user separately authorized merging Phase 1 PR #1; that integration is tracked
-below and does not publish Phase 2 implementation.
+below and did not publish Phase 2 implementation. The dated publication record
+below supersedes that historical local-only status.
 
 ## Proper Tasks and sub-tasks
 
@@ -21,6 +22,47 @@ below and does not publish Phase 2 implementation.
 | Bounded independent peer review | Blocked | Repository outside configured delegation roots; proceeded independently as instructed |
 
 Phase 2A is complete within its stated scope. Phase 2B remains pending.
+
+## GitHub publication record — 9 October 2026
+
+Phase 2A has been pushed to `origin/feat/phase-2-spatial-rollout`. Fresh fetch and
+inspection confirmed local and remote feature heads at
+`9e271da7dc04e04155ae45cfc4b2fb5b7a45934a`, five commits ahead and zero behind
+`origin/main` (`bf49ca583804ea3777bf2cc1d337bcbf21a5f351`). The working tree was
+clean, Phase 1 was already merged, and no reconciliation was needed.
+
+[Push CI run 37883819787](https://github.com/devgupta-9/reactcoach-11/actions/runs/37883819787)
+completed successfully on that exact feature commit. The workflow includes Rust
+formatting, Clippy with warnings denied, locked workspace tests, Next.js lint,
+typecheck, production build and Playwright. This historical green run does not
+establish the status of later documentation commits or a new PR head.
+
+Finalization reran every established local check successfully: **61 Rust tests**
+(agents 1, analytics 2, API 13, decision-engine 41, match-engine 4, shared 0),
+including **29 spatial simulation tests and six simulation API tests**; Rust
+formatting and Clippy; Next.js lint, typecheck and production build; and **14
+Playwright tests** across desktop and mobile in **50.1 seconds**. Failed,
+ignored and skipped test counts were zero. Browser tests started fresh API and
+production frontend servers with `CI=true`. Rust-generated request, outcomes,
+final states and events still match the checked-in example fixtures.
+
+The final source audit found no verified correctness or security defect requiring
+implementation changes. It confirmed movement and braking bounds, integer-safe
+validated state, monotonic time, consistent possession, feasible counter selection,
+attacker adaptation followed by another defender response, shared counterfactual
+origins and strict-improvement recommendations. Legacy scoring, endpoints and
+frontend behavior remain unchanged. The full diff contains only intended engine,
+API, tests, dependencies, documentation and synthetic fixtures.
+
+Draft PR status at this documentation snapshot: **not yet created**. Publication
+remains in progress until the draft PR and final-head remote checks are verified.
+Phase 2A remains **unmerged into main**; merge requires separate review approval.
+
+Independent peer review was **not completed**. Previous delegation was blocked
+because this repository is outside the configured delegation roots. Fresh
+capability discovery reports bridge v0.3.0 and an available Antigravity CLI, but
+does not establish account execution or remove that workspace restriction. No
+global peer settings were changed and no independent-review approval is claimed.
 
 ## Final review and publication verification — 9 October 2026
 
@@ -67,7 +109,7 @@ The existing CI workflow runs locked Rust checks and the complete web/browser su
 on both branch pushes and pull requests. Final commit, draft URL and check-run
 results are recorded by GitHub and reported with the publication handoff.
 
-## Git integration
+## Historical Git integration — 8 October 2026
 
 Phase 1 PR #1 was merged into main with explicit user authorization on 8 October
 2026. Merge commit: `bf49ca583804ea3777bf2cc1d337bcbf21a5f351`. Its file tree is
@@ -75,7 +117,8 @@ identical to the verified Phase 1 head `bc2994d`; all four remote checks passed.
 GitHub confirms PR #1 is closed and merged. The Phase 1 branch remains available.
 
 Local main was synchronized, and main was merged into the local Phase 2 branch
-without conflicts or file changes. Phase 2 remains unpushed and unmerged into main.
+without conflicts or file changes. At that snapshot Phase 2 was unpushed and
+unmerged into main; the publication record above gives the later branch status.
 Implementation commits: `5a4abcf` (engine) and `85081ff` (API and documentation).
 
 ## Implementation and files
@@ -218,9 +261,10 @@ or bypassed. Codex remained the sole implementation and review owner.
 - Existing offside analysis remains position-only. No Law 11 offence is inferred
   from the sparse open-play simulation.
 - Input, worker and trace bounds are tested. Full production load/security testing,
-  authentication, Phase 2 remote CI, LLM explanation and cloud deployment remain outside scope.
+  authentication, LLM explanation and cloud deployment remain outside scope.
 
-Recommended Phase 2B: first consume these traces in an interactive pitch with shared
+Recommended Phase 2B: connect spatial evidence to synthetic match events and
+consume these traces in an interactive pitch with shared
 playback controls and visible assumptions; then add editable geometry, passing-angle
 controls, moving-receiver/rendezvous cases and more precise interception timing, with
 focused numerical/property tests. Keep Foundry explanations dependent on verified

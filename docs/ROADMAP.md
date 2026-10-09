@@ -26,8 +26,9 @@ The product is an **adaptive football decision coach**: assessed-player strength
 - [x] Phase 2A: same-start spatial rollouts, defender counters, assessed-player adaptation, evidence and additive API.
 - [x] Phase 2A: integer movement budgets, boundary braking, ownership validation and bounded execution.
 - [x] Phase 2A final audit (9 October 2026): 61 Rust tests, 14 desktop/mobile browser checks, lint/types/build, reproducible fixtures and complete diff review.
-- Phase 2A publication targets a draft PR into main; merge requires separate approval.
-- [ ] Phase 2B: animated tactical pitch using the verified traces, editable geometry and comparison playback.
+- [x] Phase 2A pushed to `feat/phase-2-spatial-rollout`; exact implementation head `9e271da` passed remote push CI (run 37883819787).
+- [ ] Phase 2A publication: create a draft PR into main and verify CI on its final head; merge requires separate approval.
+- [ ] Phase 2B: connect spatial evidence to synthetic match events and an animated tactical pitch, with editable geometry and comparison playback.
 - [ ] Phase 2B: richer observation cadence and interception timing, with additional geometry/property tests.
 - [ ] Add scenario-specific constraints: walls, goalkeeper positions, pass timing.
 - [ ] Run product UX tests with realistic synthetic situations.
