@@ -54,9 +54,22 @@ origins and strict-improvement recommendations. Legacy scoring, endpoints and
 frontend behavior remain unchanged. The full diff contains only intended engine,
 API, tests, dependencies, documentation and synthetic fixtures.
 
-Draft PR status at this documentation snapshot: **not yet created**. Publication
-remains in progress until the draft PR and final-head remote checks are verified.
+[PR #2](https://github.com/devgupta-9/reactcoach-11/pull/2) now exists, with base
+`main` and head `feat/phase-2-spatial-rollout`. At this documentation snapshot it
+is **not yet a draft** and has a generic title and an empty description. The
+GitHub connector opened an edit form for the requested title, description and
+draft conversion, but requires the user's **Submit** action before applying it.
+That operation has not been reported as successful. Publication remains
+**incomplete** until the draft metadata is applied and final-head checks pass.
 Phase 2A remains **unmerged into main**; merge requires separate review approval.
+
+On reviewed publication head `4bba7ba7a20c3b6eb5b9d3a037ad478bf67ed770`, both
+[push CI 37888004552](https://github.com/devgupta-9/reactcoach-11/actions/runs/37888004552)
+and [PR CI 37888062360](https://github.com/devgupta-9/reactcoach-11/actions/runs/37888062360)
+completed successfully. Every required Rust, Next.js and Playwright command was
+confirmed successful in both runs. GitHub reported `mergeable: true` and
+`mergeable_state: clean`. Subsequent documentation-only commits require their
+own fresh CI verification; the final handoff reports the exact checked head.
 
 Independent peer review was **not completed**. Previous delegation was blocked
 because this repository is outside the configured delegation roots. Fresh
