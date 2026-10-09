@@ -1,6 +1,6 @@
 # ReactCoach 11 — Adaptive Football Decision Intelligence
 
-**Status:** Approved product direction, early implementation. **Project name:** ReactCoach 11 (final name). **Repository:** `devgupta-9/reactcoach-11`.
+**Status:** Domain-level coaching specification, retained for the underlying decision engine. **Approved hackathon product direction (2026-10-09):** [Live Match Intelligence Execution Plan](HACKATHON_EXECUTION_PLAN.md). That approved plan and the [roadmap](ROADMAP.md) supersede any conflicting standalone-coaching priorities or schedule in this historical domain specification. **Product name:** ReactCoach 11. **Repository:** `devgupta-9/reactcoach-11`.
 
 ## Mission
 
