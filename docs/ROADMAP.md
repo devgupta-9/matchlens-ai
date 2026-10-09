@@ -1,54 +1,71 @@
-# ReactCoach 11 — Hackathon implementation roadmap
+# ReactCoach 11 — Hackathon Roadmap
 
-**Goal:** submit by 26 October 2026 with time for final review before the 27 October Pacific deadline.
+**Status: APPROVED — 2026-10-09.**  
+**Execution baseline:** [Approved Hackathon Execution Plan](HACKATHON_EXECUTION_PLAN.md) — authoritative scope, acceptance criteria, constraints, owners and dates.  
+**Target submission:** **2026-10-26** (buffer ahead of the competition deadline).
 
-The product is an **adaptive football decision coach**: assessed-player strengths and weaknesses, opponent vulnerabilities, scenario rules, counterfactual options, opponent responses and concrete correction advice.
+## Final product direction
 
-## Proper Task 1 — Foundation (Done; merged into main)
-- [x] Rust + Next.js workspace, synthetic replay and Axum/SSE.
-- [x] GitHub CI format, lint, test and build passed on initial foundation.
-- [x] Generate and commit Cargo.lock and apps/web/package-lock.json.
-- [x] End-to-end browser replay verification and desktop/mobile overflow checks.
-- [x] Local Rust formatting, Clippy, workspace tests, Next.js lint/types/build, and browser regressions (8 October 2026).
-- [x] Verify Phase 1 head bc2994d remotely: four successful Rust/Next.js check runs on 8 October 2026.
-- [x] Rename GitHub repository to reactcoach-11 and confirm branch/PR history.
-- [x] Innovation Studio naming and project details updated (owner confirmed).
+**ReactCoach 11 — AI-Powered Live Tactical Intelligence**
 
-## Proper Task 2 — Adaptive Decision Intelligence (In progress)
-- [x] Formal core specification: docs/REACTCOACH_11_PRODUCT_SPEC.md.
-- [x] Synthetic player strength/weakness profile contracts.
-- [x] Deterministic action fitness comparison for open play, penalties, free kicks.
-- [x] Offside *position-only* Law 11 demonstration and explicit limitations.
-- [x] Read-only endpoints for synthetic decision demos and offside position.
-- [x] Verify all CI checks after the pivot (GitHub Actions run 37739740707).
-- [x] Add user-editable attribute profiles with safe input validation and reranking.
-- [x] Add deterministic opponent best-response comparison across two possible counters for each scenario action (discrete traits-based model).
-- [x] Phase 2A: same-start spatial rollouts, defender counters, assessed-player adaptation, evidence and additive API.
-- [x] Phase 2A: integer movement budgets, boundary braking, ownership validation and bounded execution.
-- [x] Phase 2A final audit (9 October 2026): 61 Rust tests, 14 desktop/mobile browser checks, lint/types/build, reproducible fixtures and complete diff review.
-- [x] Phase 2A pushed to `feat/phase-2-spatial-rollout`; exact implementation head `9e271da` passed remote push CI (run 37883819787).
-- [x] Phase 2A PR #2 targets main; push and PR CI passed on reviewed publication head `4bba7ba` (runs 37888004552 and 37888062360).
-- [ ] Phase 2A publication: apply the requested draft status, title and description to PR #2 (GitHub edit form awaits Submit), then confirm final-head CI; merge requires separate approval.
-- [ ] Phase 2B: connect spatial evidence to synthetic match events and an animated tactical pitch, with editable geometry and comparison playback.
-- [ ] Phase 2B: richer observation cadence and interception timing, with additional geometry/property tests.
-- [ ] Add scenario-specific constraints: walls, goalkeeper positions, pass timing.
-- [ ] Run product UX tests with realistic synthetic situations.
+Synthetic live football replay → meaningful event detection → spatial counterfactual and opponent-response evidence → verified Microsoft Foundry narratives → synchronized match overlay → Fan / Analyst personalization and recap.
 
-## Proper Task 3 — Microsoft Foundry Intelligence (Pending)
-- [ ] Set up securely scoped Foundry credentials and budget limits.
-- [ ] Rust orchestration: interpreter, planner, opponent challenger, rules/evidence verifier, coaching explainer.
-- [ ] Structured outputs, citations to synthetic events and model assumptions.
-- [ ] Negative tests for fabricated player data, unsupported claims and rules violations.
+The coaching simulator is a differentiator *inside* the match-intelligence pipeline, not a disconnected application.
 
-## Proper Task 4 — Presentation (Pending)
-- [ ] Editable on-pitch tactics, comparison timelines and action animation.
-- [ ] Fan/analyst coaching modes, accessibility, responsive layouts.
-- [ ] Data-provenance explanation and transparent metric definitions.
+## Milestones
 
-## Proper Task 5 — Submission (Pending)
-- [ ] Azure deployment and observability.
-- [ ] Synthetic adversarial scenarios, security and performance audit.
-- [ ] Public repository and architecture guide.
-- [ ] Under-2-minute demonstration video and Innovation Studio final submission.
+| Proper Task | Planned dates | Status | Merge / acceptance gate |
+| --- | --- | --- | --- |
+| 1. Foundation | Completed | **DONE** | Phase 1 PR #1 merged; Rust/API/Next.js/replay/CI baseline |
+| 2A. Spatial simulation | Completed | **DONE** | Phase 2A PR #2 merged; 61 Rust tests and 14 browser checks reported; post-merge main CI green |
+| **2B. Live synthetic match intelligence** | **Oct 10–13** | **PENDING — NEXT** | Two meaningful events with replay-stable typed insight evidence and authored spatial fixtures |
+| 3. Microsoft Foundry intelligence | Oct 13–17 | PENDING | Real inference; versioned grounded narratives; evidence validator; outage fallback |
+| 4. Broadcast & audience experience | Oct 17–21 | PENDING | Synchronized overlays, real trace playback, two audience views, recap, mobile |
+| 5. Azure deployment & QA | Oct 21–24 | PENDING | Public HTTPS demo; approved cost/credentials; CI/E2E/security/observability |
+| 6. Demo & submission | Oct 24–26 | PENDING | Public repo/demo, sub-two-minute video, valid platform submission |
 
-**Scope constraint:** This MVP does not infer real-world player psychology, exact human reflexes or success probabilities without valid data.
+The dates overlap deliberately to allow early Cloud/Foundry access checks and interface integration. They are internal targets, not delivery guarantees.
+
+## Proper Task 2B — Immediate backlog
+
+- [ ] **2B.1** Expand the existing fictional event replay into coherent match moments while preserving established contracts.
+- [ ] **2B.2** Detect at least two significant moments from factual synthetic event records with deterministic criteria.
+- [ ] **2B.3** Attach openly authored and versioned spatial states to selected match-event IDs; never claim full player tracking was inferred from sparse events.
+- [ ] **2B.4** Emit typed evidence: match ID, event ID/time, stats, authored scenario ID/version, comparison trace IDs, outcome, provenance and limitations.
+- [ ] **2B.5** Connect evidence to the match stream and replay/seek lifecycle without stale results or duplicate insights.
+- [ ] **2B.6** Add deterministic fixture, API and replay regression coverage.
+- [ ] **2B gate:** Two match events independently produce stable evidence-backed spatial comparisons. Existing Rust, web and browser tests pass.
+
+**Suggested branch:** `feat/phase-2b-live-match-intelligence`. Start from verified `main`, keep changes on a feature branch and review by PR before merge.
+
+## Cross-cutting setup to start alongside 2B
+
+- [ ] Verify Microsoft Foundry account, deployment regions, available models, costs and quotas.
+- [ ] Obtain explicit owner approval *before* provisioning paid Azure resources.
+- [ ] Prepare mock and real-model evidence-validation test plans without exposing browser credentials.
+- [ ] Choose two end-to-end demo scenarios and evidence fixtures early.
+- [ ] Have Agy prepare interface review after backend event/insight contracts are stable, without overlapping file edits.
+
+## Submission readiness
+
+- [ ] Match-triggered synthetic tactical intelligence, at least two moments
+- [ ] Evidence-backed original versus corrected spatial replay
+- [ ] Genuine verified Foundry explanation and deterministic fallback
+- [ ] Fan and Analyst modes grounded in identical facts
+- [ ] Broadcast-style overlay and match recap
+- [ ] Public tested Azure demo (desktop/mobile)
+- [ ] Public repo, demo video under two minutes, project description and platform submission
+
+## Scope freeze and caveats
+
+**Defer:** Full-team tracking/physics, real athlete predictions, unlicensed Premier League data, extensive penalty/free-kick physics, advanced VAR, unnecessary databases, and noncritical effects. Current football ratings and spatial parameters are synthetic and uncalibrated. Do not present decision indices as probabilities or sparse offside geometry as a complete Law 11 decision.
+
+**Status discipline:** Use Proper Task / Sub-task labels and Done, In Progress, Pending, Blocked or Deferred. Tests and delivered artifacts—not plans—determine completion.
+
+### Historical verification
+
+- [Phase 1 verification](PHASE_1_VERIFICATION.md)
+- [Phase 2A verification](PHASE_2A_VERIFICATION.md)
+- [Spatial simulation contract](SPATIAL_SIMULATION_CONTRACT.md)
+
+This roadmap supersedes the preapproval coaching-only sequence. The detailed approved execution plan is the final scope authority for the hackathon.
