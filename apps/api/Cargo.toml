@@ -10,7 +10,7 @@ reactcoach-shared = { path = "../../crates/shared" }
 reactcoach-match-engine = { path = "../../crates/match-engine" }
 reactcoach-decision-engine = { path = "../../crates/decision-engine" }
 axum = "0.8"
-tokio = { version = "1", features = ["macros", "rt-multi-thread", "net", "time"] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "net", "time", "sync"] }
 futures-util = "0.3"
 serde.workspace = true
 serde_json.workspace = true

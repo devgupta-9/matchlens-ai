@@ -3,6 +3,7 @@
 //! measurements or claims about real athletes.
 pub mod offside;
 pub mod responses;
+pub mod simulation;
 
 pub use responses::OpponentResponseAssessment;
 

@@ -4,13 +4,13 @@
 
 The product is an **adaptive football decision coach**: assessed-player strengths and weaknesses, opponent vulnerabilities, scenario rules, counterfactual options, opponent responses and concrete correction advice.
 
-## Proper Task 1 — Foundation (Done locally)
+## Proper Task 1 — Foundation (Done; merged into main)
 - [x] Rust + Next.js workspace, synthetic replay and Axum/SSE.
 - [x] GitHub CI format, lint, test and build passed on initial foundation.
 - [x] Generate and commit Cargo.lock and apps/web/package-lock.json.
 - [x] End-to-end browser replay verification and desktop/mobile overflow checks.
 - [x] Local Rust formatting, Clippy, workspace tests, Next.js lint/types/build, and browser regressions (8 October 2026).
-- [ ] Verify the revised CI workflow remotely after an authorized push.
+- [x] Verify Phase 1 head bc2994d remotely: four successful Rust/Next.js check runs on 8 October 2026.
 - [x] Rename GitHub repository to reactcoach-11 and confirm branch/PR history.
 - [x] Innovation Studio naming and project details updated (owner confirmed).
 
@@ -23,8 +23,14 @@ The product is an **adaptive football decision coach**: assessed-player strength
 - [x] Verify all CI checks after the pivot (GitHub Actions run 37739740707).
 - [x] Add user-editable attribute profiles with safe input validation and reranking.
 - [x] Add deterministic opponent best-response comparison across two possible counters for each scenario action (discrete traits-based model).
-- [ ] Add multi-step opponent and assessed-player response rollouts with spatial constraints.
-- [ ] Add precise spatial movement and play-state constraints.
+- [x] Phase 2A: same-start spatial rollouts, defender counters, assessed-player adaptation, evidence and additive API.
+- [x] Phase 2A: integer movement budgets, boundary braking, ownership validation and bounded execution.
+- [x] Phase 2A final audit (9 October 2026): 61 Rust tests, 14 desktop/mobile browser checks, lint/types/build, reproducible fixtures and complete diff review.
+- [x] Phase 2A pushed to `feat/phase-2-spatial-rollout`; exact implementation head `9e271da` passed remote push CI (run 37883819787).
+- [x] Phase 2A PR #2 targets main; push and PR CI passed on reviewed publication head `4bba7ba` (runs 37888004552 and 37888062360).
+- [ ] Phase 2A publication: apply the requested draft status, title and description to PR #2 (GitHub edit form awaits Submit), then confirm final-head CI; merge requires separate approval.
+- [ ] Phase 2B: connect spatial evidence to synthetic match events and an animated tactical pitch, with editable geometry and comparison playback.
+- [ ] Phase 2B: richer observation cadence and interception timing, with additional geometry/property tests.
 - [ ] Add scenario-specific constraints: walls, goalkeeper positions, pass timing.
 - [ ] Run product UX tests with realistic synthetic situations.
 

@@ -1,0 +1,304 @@
+{
+    "scenario_version":  "open_play_spatial_v1",
+    "duration_ms":  4000,
+    "adaptation_at_ms":  1200,
+    "recommended_correction":  "release_pass",
+    "baseline":  {
+                     "action":  "wide_right",
+                     "evaluation":  {
+                                        "friendly_possession":  false,
+                                        "bypassed_defender":  false,
+                                        "forward_ball_progress_mm":  3028,
+                                        "defender_clearance_mm":  0,
+                                        "objective_key":  [
+                                                              false,
+                                                              false,
+                                                              0,
+                                                              0
+                                                          ]
+                                    },
+                     "final_state":  {
+                                         "elapsed_ms":  4000,
+                                         "assessed":  {
+                                                          "position_mm":  {
+                                                                              "x":  56318,
+                                                                              "y":  45318
+                                                                          },
+                                                          "velocity_mm_s":  {
+                                                                                "x":  2109,
+                                                                                "y":  2109
+                                                                            }
+                                                      },
+                                         "opponent":  {
+                                                          "position_mm":  {
+                                                                              "x":  48028,
+                                                                              "y":  37028
+                                                                          },
+                                                          "velocity_mm_s":  {
+                                                                                "x":  0,
+                                                                                "y":  0
+                                                                            }
+                                                      },
+                                         "teammate":  {
+                                                          "position_mm":  {
+                                                                              "x":  57000,
+                                                                              "y":  26000
+                                                                          },
+                                                          "velocity_mm_s":  {
+                                                                                "x":  0,
+                                                                                "y":  0
+                                                                            }
+                                                      },
+                                         "ball":  {
+                                                      "position_mm":  {
+                                                                          "x":  48028,
+                                                                          "y":  37028
+                                                                      },
+                                                      "velocity_mm_s":  {
+                                                                            "x":  0,
+                                                                            "y":  0
+                                                                        },
+                                                      "possession":  {
+                                                                         "kind":  "owned",
+                                                                         "owner":  "opponent"
+                                                                     }
+                                                  },
+                                         "current_action":  "wide_right"
+                                     },
+                     "events":  [
+                                    {
+                                        "id":  "baseline:event:000",
+                                        "elapsed_ms":  0,
+                                        "evidence":  {
+                                                         "kind":  "action_selected",
+                                                         "action":  "wide_right"
+                                                     }
+                                    },
+                                    {
+                                        "id":  "baseline:event:001",
+                                        "elapsed_ms":  100,
+                                        "evidence":  {
+                                                         "kind":  "opponent_decision",
+                                                         "observed_action":  "wide_right",
+                                                         "options":  [
+                                                                         {
+                                                                             "id":  "track_wide_run",
+                                                                             "legacy_score_source_id":  "track_wide_run",
+                                                                             "effectiveness_index":  58,
+                                                                             "target_mm":  {
+                                                                                               "x":  46528,
+                                                                                               "y":  35528
+                                                                                           },
+                                                                             "feasible":  true,
+                                                                             "reason":  "movement preview reaches within 2 L1 metres of target by horizon"
+                                                                         },
+                                                                         {
+                                                                             "id":  "close_wide_angle",
+                                                                             "legacy_score_source_id":  "close_wide_angle",
+                                                                             "effectiveness_index":  79,
+                                                                             "target_mm":  {
+                                                                                               "x":  48028,
+                                                                                               "y":  37028
+                                                                                           },
+                                                                             "feasible":  true,
+                                                                             "reason":  "movement preview reaches within 2 L1 metres of target by horizon"
+                                                                         }
+                                                                     ],
+                                                         "chosen_response_id":  "close_wide_angle",
+                                                         "target_mm":  {
+                                                                           "x":  48028,
+                                                                           "y":  37028
+                                                                       }
+                                                     }
+                                    },
+                                    {
+                                        "id":  "baseline:event:002",
+                                        "elapsed_ms":  1600,
+                                        "evidence":  {
+                                                         "kind":  "possession_changed",
+                                                         "owner":  "opponent",
+                                                         "reason":  "defender control radius intersects ball movement segment"
+                                                     }
+                                    }
+                                ]
+                 },
+    "corrected":  {
+                      "action":  "release_pass",
+                      "evaluation":  {
+                                         "friendly_possession":  true,
+                                         "bypassed_defender":  true,
+                                         "forward_ball_progress_mm":  12000,
+                                         "defender_clearance_mm":  11471,
+                                         "objective_key":  [
+                                                               true,
+                                                               true,
+                                                               12,
+                                                               11
+                                                           ]
+                                     },
+                      "final_state":  {
+                                          "elapsed_ms":  4000,
+                                          "assessed":  {
+                                                           "position_mm":  {
+                                                                               "x":  47208,
+                                                                               "y":  36208
+                                                                           },
+                                                           "velocity_mm_s":  {
+                                                                                 "x":  -20,
+                                                                                 "y":  -20
+                                                                             }
+                                                       },
+                                          "opponent":  {
+                                                           "position_mm":  {
+                                                                               "x":  51210,
+                                                                               "y":  31681
+                                                                           },
+                                                           "velocity_mm_s":  {
+                                                                                 "x":  2354,
+                                                                                 "y":  -1536
+                                                                             }
+                                                       },
+                                          "teammate":  {
+                                                           "position_mm":  {
+                                                                               "x":  57000,
+                                                                               "y":  26000
+                                                                           },
+                                                           "velocity_mm_s":  {
+                                                                                 "x":  0,
+                                                                                 "y":  0
+                                                                             }
+                                                       },
+                                          "ball":  {
+                                                       "position_mm":  {
+                                                                           "x":  57000,
+                                                                           "y":  26000
+                                                                       },
+                                                       "velocity_mm_s":  {
+                                                                             "x":  0,
+                                                                             "y":  0
+                                                                         },
+                                                       "possession":  {
+                                                                          "kind":  "owned",
+                                                                          "owner":  "teammate"
+                                                                      }
+                                                   },
+                                          "current_action":  "release_pass"
+                                      },
+                      "events":  [
+                                     {
+                                         "id":  "alternative:release_pass:event:000",
+                                         "elapsed_ms":  0,
+                                         "evidence":  {
+                                                          "kind":  "action_selected",
+                                                          "action":  "wide_right"
+                                                      }
+                                     },
+                                     {
+                                         "id":  "alternative:release_pass:event:001",
+                                         "elapsed_ms":  100,
+                                         "evidence":  {
+                                                          "kind":  "opponent_decision",
+                                                          "observed_action":  "wide_right",
+                                                          "options":  [
+                                                                          {
+                                                                              "id":  "track_wide_run",
+                                                                              "legacy_score_source_id":  "track_wide_run",
+                                                                              "effectiveness_index":  58,
+                                                                              "target_mm":  {
+                                                                                                "x":  46528,
+                                                                                                "y":  35528
+                                                                                            },
+                                                                              "feasible":  true,
+                                                                              "reason":  "movement preview reaches within 2 L1 metres of target by horizon"
+                                                                          },
+                                                                          {
+                                                                              "id":  "close_wide_angle",
+                                                                              "legacy_score_source_id":  "close_wide_angle",
+                                                                              "effectiveness_index":  79,
+                                                                              "target_mm":  {
+                                                                                                "x":  48028,
+                                                                                                "y":  37028
+                                                                                            },
+                                                                              "feasible":  true,
+                                                                              "reason":  "movement preview reaches within 2 L1 metres of target by horizon"
+                                                                          }
+                                                                      ],
+                                                          "chosen_response_id":  "close_wide_angle",
+                                                          "target_mm":  {
+                                                                            "x":  48028,
+                                                                            "y":  37028
+                                                                        }
+                                                      }
+                                     },
+                                     {
+                                         "id":  "alternative:release_pass:event:002",
+                                         "elapsed_ms":  1200,
+                                         "evidence":  {
+                                                          "kind":  "adaptation",
+                                                          "action":  "release_pass",
+                                                          "feasible":  true,
+                                                          "reason":  "available in the actual adaptation state"
+                                                      }
+                                     },
+                                     {
+                                         "id":  "alternative:release_pass:event:003",
+                                         "elapsed_ms":  1200,
+                                         "evidence":  {
+                                                          "kind":  "pass_released",
+                                                          "from":  "assessed",
+                                                          "to":  "teammate",
+                                                          "target_mm":  {
+                                                                            "x":  57000,
+                                                                            "y":  26000
+                                                                        }
+                                                      }
+                                     },
+                                     {
+                                         "id":  "alternative:release_pass:event:004",
+                                         "elapsed_ms":  1300,
+                                         "evidence":  {
+                                                          "kind":  "opponent_decision",
+                                                          "observed_action":  "release_pass",
+                                                          "options":  [
+                                                                          {
+                                                                              "id":  "intercept_passing_lane",
+                                                                              "legacy_score_source_id":  "intercept_return_pass",
+                                                                              "effectiveness_index":  75,
+                                                                              "target_mm":  {
+                                                                                                "x":  52258,
+                                                                                                "y":  31258
+                                                                                            },
+                                                                              "feasible":  true,
+                                                                              "reason":  "movement preview reaches within 2 L1 metres of target by horizon"
+                                                                          },
+                                                                          {
+                                                                              "id":  "close_receiver",
+                                                                              "legacy_score_source_id":  "follow_receiving_runner",
+                                                                              "effectiveness_index":  64,
+                                                                              "target_mm":  {
+                                                                                                "x":  57000,
+                                                                                                "y":  26000
+                                                                                            },
+                                                                              "feasible":  false,
+                                                                              "reason":  "target unreachable within remaining bounded movement horizon"
+                                                                          }
+                                                                      ],
+                                                          "chosen_response_id":  "intercept_passing_lane",
+                                                          "target_mm":  {
+                                                                            "x":  52258,
+                                                                            "y":  31258
+                                                                        }
+                                                      }
+                                     },
+                                     {
+                                         "id":  "alternative:release_pass:event:005",
+                                         "elapsed_ms":  2500,
+                                         "evidence":  {
+                                                          "kind":  "possession_changed",
+                                                          "owner":  "teammate",
+                                                          "reason":  "receiver controls ball at the actual pass destination"
+                                                      }
+                                     }
+                                 ]
+                  }
+}
