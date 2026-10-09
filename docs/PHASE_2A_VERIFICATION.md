@@ -22,6 +22,51 @@ below and does not publish Phase 2 implementation.
 
 Phase 2A is complete within its stated scope. Phase 2B remains pending.
 
+## Final review and publication verification — 9 October 2026
+
+The final audit started on clean branch `feat/phase-2-spatial-rollout` at
+`531ea62b341d3e7fbd60d62f052a8072c3034dd4`. After fetching origin, main was an
+ancestor of this branch (zero commits behind, four ahead), and Phase 1 head
+`bc2994d` was an ancestor of origin/main. No reconciliation or history rewrite
+was needed. The complete diff contained only the simulation, additive API,
+test/example dependency declaration, and related documentation/fixtures. A path
+and credential-pattern scan found no build artifacts, temporary files or
+credential-like content in the proposed diff. The example JSON files are
+intentional synthetic review fixtures, not build output.
+
+Fresh execution passed Rust formatting, Clippy with warnings denied, all **61 Rust
+tests**, Next.js lint, strict typecheck, production build, and all **14 desktop/mobile
+Playwright checks** against newly started servers. The workspace run includes all
+**29 new simulation tests and six new API tests**. There were zero failing, ignored
+or skipped tests; doc-test targets contain zero tests. The generated Rust request,
+baseline/corrected evaluations, final states and events exactly match the checked-in
+JSON fixtures. No implementation regression was reproduced.
+
+The code audit confirms actual bounded position/velocity updates and ball transport:
+the defender selects a feasible target and moves, the attacker adapts from the
+shared state, and the defender selects and executes a second response. This is a
+state-transition cycle, not response-description generation. Boundary braking,
+integer arithmetic, ownership, timing, stable ties, shared initial conditions and
+the unchanged legacy score formulas were inspected alongside their tests.
+
+Two documentation findings were corrected: the defender can control a stationary
+loose ball, while friendly recovery remains unmodeled; metre buckets are ranking
+resolution and can be crossed by a smaller displacement, not a guaranteed one-metre
+benefit. Exact outcome distances remain available for judging tactical significance.
+The horizon reachability screen, stationary teammate, approximate interception and
+separate offside assessment remain explicit limitations rather than completed features.
+
+Fresh peer discovery again reported bridge v0.3.0 and an available Antigravity CLI,
+but denied this repository because it is outside configured delegation roots.
+Independent peer review was **not executed**; account execution remains unverified.
+No delegation, permissions change or global environment repair was attempted.
+Git status after discovery showed no peer changes. Codex performed the source audit.
+
+Publication scope is this branch and a **draft PR targeting main**, with no merge.
+The existing CI workflow runs locked Rust checks and the complete web/browser suite
+on both branch pushes and pull requests. Final commit, draft URL and check-run
+results are recorded by GitHub and reported with the publication handoff.
+
 ## Git integration
 
 Phase 1 PR #1 was merged into main with explicit user authorization on 8 October
@@ -167,7 +212,8 @@ or bypassed. Codex remained the sole implementation and review owner.
   horizon screen; endpoint defender positions approximate segment interception.
 - The objective credits supporting-player possession; this is local attacking
   continuity and territory, not the assessed player's eventual scoring probability.
-- Loose-ball recovery and unfinished passes are unresolved tactical states. One-two
+- Friendly loose-ball recovery and unfinished passes are unresolved tactical states;
+  the defender can control a stationary loose ball within the same control radius. One-two
   returns use a fixed rendezvous, and the moving attacker can miss it honestly.
 - Existing offside analysis remains position-only. No Law 11 offence is inferred
   from the sparse open-play simulation.

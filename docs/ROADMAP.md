@@ -4,7 +4,7 @@
 
 The product is an **adaptive football decision coach**: assessed-player strengths and weaknesses, opponent vulnerabilities, scenario rules, counterfactual options, opponent responses and concrete correction advice.
 
-## Proper Task 1 — Foundation (Done locally)
+## Proper Task 1 — Foundation (Done; merged into main)
 - [x] Rust + Next.js workspace, synthetic replay and Axum/SSE.
 - [x] GitHub CI format, lint, test and build passed on initial foundation.
 - [x] Generate and commit Cargo.lock and apps/web/package-lock.json.
@@ -25,6 +25,8 @@ The product is an **adaptive football decision coach**: assessed-player strength
 - [x] Add deterministic opponent best-response comparison across two possible counters for each scenario action (discrete traits-based model).
 - [x] Phase 2A: same-start spatial rollouts, defender counters, assessed-player adaptation, evidence and additive API.
 - [x] Phase 2A: integer movement budgets, boundary braking, ownership validation and bounded execution.
+- [x] Phase 2A final audit (9 October 2026): 61 Rust tests, 14 desktop/mobile browser checks, lint/types/build, reproducible fixtures and complete diff review.
+- Phase 2A publication targets a draft PR into main; merge requires separate approval.
 - [ ] Phase 2B: animated tactical pitch using the verified traces, editable geometry and comparison playback.
 - [ ] Phase 2B: richer observation cadence and interception timing, with additional geometry/property tests.
 - [ ] Add scenario-specific constraints: walls, goalkeeper positions, pass timing.

@@ -59,7 +59,8 @@ whole movement segment against the defender's end-of-tick position, stopping the
 ball at the actual contact point. Receiving or interception does not snap the ball
 to a player's centre; the next controlled movement follows the owner within its
 budget. There is no aerial trajectory, spin, random accuracy error or collision
-response. Loose balls remain stationary; recovery is outside this scenario.
+response. Loose balls remain stationary until the defender enters their control
+radius. Assessed-player and teammate loose-ball recovery are outside this scenario.
 
 ## Multi-step interaction and comparable alternatives
 
@@ -111,7 +112,9 @@ division. Baseline wins ties, followed by first-defined alternatives. A correcti
 is returned only for a strictly greater tuple. All comparisons use the same horizon,
 initial geometry, profiles, movement policy and objective. This prioritizes avoiding
 turnover over territorial gain; it is not expected goals or a success probability.
-The one-metre resolution is an explicit relevance threshold, not statistical confidence.
+Whole-metre buckets define ranking resolution, not statistical confidence or a
+guaranteed one-metre improvement: a smaller displacement can cross a bucket boundary.
+The report preserves the exact millimetre differences so reviewers can judge significance.
 
 ## Response and trace
 
