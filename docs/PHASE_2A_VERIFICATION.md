@@ -41,7 +41,7 @@ Finalization reran every established local check successfully: **61 Rust tests**
 (agents 1, analytics 2, API 13, decision-engine 41, match-engine 4, shared 0),
 including **29 spatial simulation tests and six simulation API tests**; Rust
 formatting and Clippy; Next.js lint, typecheck and production build; and **14
-Playwright tests** across desktop and mobile in **50.1 seconds**. Failed,
+Playwright tests** across desktop and mobile. Failed,
 ignored and skipped test counts were zero. Browser tests started fresh API and
 production frontend servers with `CI=true`. Rust-generated request, outcomes,
 final states and events still match the checked-in example fixtures.
